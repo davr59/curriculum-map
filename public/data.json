@@ -1,0 +1,11 @@
+[
+  { "code": "MA101", "name": "Matemática Discreta" },
+  {
+    "code": "QU101",
+    "name": "Química Discreta"
+  },
+  {
+    "code": "FA101",
+    "name": "Física Discreta"
+  }
+]
