@@ -1,11 +1,13 @@
 [
-  { "code": "MA101", "name": "Matemática Discreta" },
-  {
-    "code": "QU101",
-    "name": "Química Discreta"
-  },
-  {
-    "code": "FA101",
-    "name": "Física Discreta"
-  }
+  [
+    { "code": "MA1403", "name": "MATEMATICA DISCRETA" },
+    {
+      "code": "IC1802",
+      "name": "INTRODUCCION A LA PROGRAMACION"
+    },
+    {
+      "code": "IC1803",
+      "name": "TALLER DE PROGRAMACION"
+    }
+  ]
 ]
