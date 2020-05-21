@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
 
-  let resultNode;
+  let result;
 
   // https://brendansudol.com/writing/responsive-d3
   function responsivefy(svg) {
@@ -22,19 +22,21 @@
     }
   }
 
-  function getResultNode() {
-    return d3.select(resultNode);
+  function getResultNode(width, height) {
+    const resultNode = d3.select(result);
+    resultNode.attr("width", width).attr("height", height);
+    return resultNode;
   }
 
   async function getData() {
     return d3.json("data.json");
   }
 
-  function buildResultNodeSvg(container, width, height) {
+  function buildResultNodeSvg(container) {
     return container
       .append("svg")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", "100%")
+      .attr("height", "100%")
       .call(responsivefy);
   }
 
@@ -47,9 +49,10 @@
     blocksCount,
     blockCount
   ) {
-    const x1 = 100 / blocksCount;
-    const x2 = x1 * (blockIndex + 1);
-    const x3 = x2 - x1 / 2 + "%";
+    const xBlocks = 100 / blocksCount;
+    const xBlockIndex = xBlocks * (blockIndex + 1);
+    const x = xBlockIndex - xBlocks / 2 + "%";
+
     const y1 = 100 / blockCount;
     const y2 = (y1 * 3) / 4;
     const y3 = y1 / 2;
@@ -61,7 +64,7 @@
       .transition()
       .duration(500)
       .text(c => c.code)
-      .attr("x", x3)
+      .attr("x", x)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .attr("y", (d, i) => y1 * (i + 1) - y2 + "%");
@@ -73,19 +76,19 @@
       .transition()
       .duration(500)
       .text(c => c.name)
-      .attr("x", x3)
+      .attr("x", x)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .attr("y", (d, i) => y1 * (i + 1) - y3 + "%");
   }
 
   onMount(async () => {
-    const width = 600;
-    const height = 400;
+    const width = 800;
+    const height = 600;
 
     const data = await getData();
-    const resultNode = getResultNode();
-    const resultSvg = buildResultNodeSvg(resultNode, width, height);
+    const resultNode = getResultNode(width, height);
+    const resultSvg = buildResultNodeSvg(resultNode);
 
     for (let i = 0; i < data.length; i++) {
       const group = resultSvg.append("g");
@@ -123,5 +126,5 @@
 </style>
 
 <main>
-  <div bind:this={resultNode} />
+  <div bind:this={result} />
 </main>
