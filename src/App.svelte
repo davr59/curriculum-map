@@ -36,8 +36,8 @@
     return container
       .append("svg")
       .attr("width", "100%")
-      .attr("height", "100%")
-      .call(responsivefy);
+      .attr("height", "100%");
+    //.call(responsivefy);
   }
 
   function buildCourses(
@@ -83,8 +83,8 @@
   }
 
   onMount(async () => {
-    const width = 800;
-    const height = 600;
+    const width = "100vw";
+    const height = "100vh";
 
     const data = await getData();
     const resultNode = getResultNode(width, height);
