@@ -43,8 +43,8 @@
     const spacingY = 10;
     const spacingHeight = 2 * spacingY;
     const rectX = blockIndexX - widthBlock + spacingX + "%";
-    const rectRX = "5%";
-    const rectRY = "7%";
+    const rectRX = "2%";
+    const rectRY = "6%";
     const widthRect = widthBlock - spacingWidth + "%";
     const heightRect = heightBlock - spacingHeight + "%";
 
