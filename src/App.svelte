@@ -30,13 +30,35 @@
     blocksCount,
     blockCount
   ) {
-    const xBlocks = 100 / blocksCount;
-    const xBlockIndex = xBlocks * (blockIndex + 1);
-    const x = xBlockIndex - xBlocks / 2 + "%";
+    const widthBlock = 100 / blocksCount;
+    const blockIndexX = widthBlock * (blockIndex + 1);
+    const heightBlock = 100 / blockCount;
 
-    const y1 = 100 / blockCount;
-    const y2 = (y1 * 3) / 4;
-    const y3 = y1 / 2;
+    const textX = blockIndexX - widthBlock / 2 + "%";
+    const textY1 = (heightBlock * 3) / 4;
+    const textY2 = heightBlock / 2;
+
+    const rectX = blockIndexX - widthBlock + "%";
+    const rectY = blockIndexX - heightBlock + "%";
+    const rectRX = "2.5%";
+    const rectRY = "2.5%";
+    const widthRect = widthBlock + "%";
+    const heightRect = heightBlock + "%";
+
+    group
+      .selectAll()
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", rectX)
+      .attr("y", (d, i) => heightBlock * (i + 1) - heightBlock + "%")
+      .attr("rx", rectRX)
+      .attr("ry", rectRY)
+      .attr("width", widthRect)
+      .attr("height", heightRect)
+      .attr("fill-opacity", 0)
+      .attr("stroke", "black");
+
     group
       .selectAll()
       .data(data)
@@ -45,10 +67,10 @@
       .transition()
       .duration(500)
       .text(c => c.code)
-      .attr("x", x)
+      .attr("x", textX)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .attr("y", (d, i) => y1 * (i + 1) - y2 + "%");
+      .attr("y", (d, i) => heightBlock * (i + 1) - textY1 + "%");
     group
       .selectAll()
       .data(data)
@@ -57,10 +79,10 @@
       .transition()
       .duration(500)
       .text(c => c.name)
-      .attr("x", x)
+      .attr("x", textX)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .attr("y", (d, i) => y1 * (i + 1) - y3 + "%");
+      .attr("y", (d, i) => heightBlock * (i + 1) - textY2 + "%");
   }
 
   onMount(async () => {
