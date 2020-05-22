@@ -35,8 +35,8 @@
     const heightBlock = 100 / blockCount;
 
     const textX = blockIndexX - widthBlock / 2 + "%";
-    const textY1 = (heightBlock * 3) / 4;
-    const textY2 = heightBlock / 2;
+    const textY1 = (heightBlock * 3) / 5.5;
+    const textY2 = heightBlock / 2.25;
 
     const spacingX = 10;
     const spacingWidth = 2 * spacingX;
