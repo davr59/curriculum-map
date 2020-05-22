@@ -38,12 +38,15 @@
     const textY1 = (heightBlock * 3) / 4;
     const textY2 = heightBlock / 2;
 
-    const rectX = blockIndexX - widthBlock + "%";
-    const rectY = blockIndexX - heightBlock + "%";
-    const rectRX = "2.5%";
-    const rectRY = "2.5%";
-    const widthRect = widthBlock + "%";
-    const heightRect = heightBlock + "%";
+    const spacingX = 10;
+    const spacingWidth = 2 * spacingX;
+    const spacingY = 10;
+    const spacingHeight = 2 * spacingY;
+    const rectX = blockIndexX - widthBlock + spacingX + "%";
+    const rectRX = "5%";
+    const rectRY = "7%";
+    const widthRect = widthBlock - spacingWidth + "%";
+    const heightRect = heightBlock - spacingHeight + "%";
 
     group
       .selectAll()
@@ -51,7 +54,7 @@
       .enter()
       .append("rect")
       .attr("x", rectX)
-      .attr("y", (d, i) => heightBlock * (i + 1) - heightBlock + "%")
+      .attr("y", (d, i) => heightBlock * (i + 1) - heightBlock + spacingY + "%")
       .attr("rx", rectRX)
       .attr("ry", rectRY)
       .attr("width", widthRect)
