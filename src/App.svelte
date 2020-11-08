@@ -92,7 +92,7 @@
   }
 
   function buildResultNodeSvg(container) {
-    return container.append("svg").attr("viewBox", "-0.1 -0.1 100 100");
+    return container.append("svg").attr("viewBox", "-0.1 -0.1 100 75");
   }
 
   function buildText(text) {
