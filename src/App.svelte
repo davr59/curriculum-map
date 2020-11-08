@@ -7,6 +7,7 @@
   let textAreaJson;
 
   const initialTextAreaJson = JSON.stringify(data);
+  let title;
 
   function onTextAreaChange() {
     updateMap();
@@ -39,17 +40,27 @@
     const resultNode = getResultNode();
     const resultSvg = buildResultNodeSvg(resultNode);
 
-    for (let index = 0; index < data.length; index++) {
+    resultSvg
+      .append("text")
+      .text(data.title || "")
+      .attr("x", "50%")
+      .attr("y", 1.5)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .attr("font-family", "monospace")
+      .attr("font-size", 2.5);
+
+    for (let index = 0; index < data.courses.length; index++) {
       const group = resultSvg.append("g");
       group
         .selectAll()
-        .data(data[index])
+        .data(data.courses[index])
         .enter()
         .append("rect")
         .attr("width", elementWidth)
         .attr("height", elementHeight)
         .attr("x", (d, i) => index * (elementWidth + elementX))
-        .attr("y", (d, i) => i * (elementHeight + elementY))
+        .attr("y", (d, i) => i * (elementHeight + elementY) + 3.75)
         .attr("rx", elementRadius)
         .attr("fill-opacity", 0)
         .attr("stroke", "black")
@@ -59,11 +70,11 @@
         .duration(5000);
       group
         .selectAll()
-        .data(data[index])
+        .data(data.courses[index])
         .enter()
         .append("text")
         .attr("x", (d, i) => index * (elementWidth + elementX) + titleBX)
-        .attr("y", (d, i) => i * (elementHeight + elementY) + titleBY)
+        .attr("y", (d, i) => i * (elementHeight + elementY) + titleBY + 3.75)
         .attr("font-family", "monospace")
         .attr("font-size", (d, i) => fontSize)
         .attr("text-anchor", "middle")
@@ -71,11 +82,11 @@
         .text((d, i) => buildText(d.code));
       group
         .selectAll()
-        .data(data[index])
+        .data(data.courses[index])
         .enter()
         .append("text")
         .attr("x", (d, i) => index * (elementWidth + elementX) + nameBX)
-        .attr("y", (d, i) => i * (elementHeight + elementY) + nameBY)
+        .attr("y", (d, i) => i * (elementHeight + elementY) + nameBY + 3.75)
         .attr("font-family", "monospace")
         .attr("font-size", (d, i) => fontSize)
         .attr("text-anchor", "middle")
@@ -111,7 +122,7 @@
     text-transform: uppercase;
     font-size: 4em;
     font-weight: 100;
-    margin: 8px 0 8px 0;
+    margin: 8px 0 16px 0;
   }
   .divTextArea {
     margin: 0 16px 16px 16px;
