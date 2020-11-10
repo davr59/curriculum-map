@@ -8,6 +8,13 @@
 
   const initialTextAreaJson = JSON.stringify(data);
   let title;
+  const maxColumns = 10;
+  const maxRows = 10;
+
+  const totalHeight = 71;
+  const totalWidth = 99.5;
+  const minWidth = 5;
+  const minHeight = 10;
 
   function onTextAreaChange() {
     updateMap();
@@ -22,8 +29,8 @@
     updateMap();
   });
 
-  const elementWidth = 6;
-  const elementHeight = 1.75;
+  const elementWidth = 10;
+  const elementHeight = 5;
   const elementRadius = 1;
   const elementX = elementWidth * 0.4;
   const elementY = elementHeight / 4;
@@ -50,7 +57,14 @@
       .attr("font-family", "monospace")
       .attr("font-size", 2.5);
 
-    for (let index = 0; index < data.courses.length; index++) {
+    const columns =
+      data.courses.length > maxColumns ? maxColumns : data.courses.length;
+
+    for (let index = 0; index < columns; index++) {
+      if (data.courses[index].length > maxRows) {
+        data.courses[index] = data.courses[index].slice(0, maxRows);
+      }
+
       const group = resultSvg.append("g");
       group
         .selectAll()
@@ -139,6 +153,9 @@
   @media print {
     .noprint {
       display: none;
+    }
+    @page {
+      size: landscape;
     }
   }
 </style>
