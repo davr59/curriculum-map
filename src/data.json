@@ -5,6 +5,14 @@
       { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO" },
       { "code": "CI0202", "name": "INGLES BASICO" },
       { "code": "MA0101", "name": "MATEMATICA GENERAL" }
+    ],
+    [
+      { "code": "CI1106", "name": "COMUNICACION ESCRITA" },
+      { "code": "IC1400", "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS" },
+      { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION" },
+      { "code": "IC1803", "name": "TALLER DE PROGRAMACION" },
+      { "code": "MA1403", "name": "MATEMATICA DISCRETA" },
+      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I" }
     ]
   ]
 }

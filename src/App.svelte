@@ -8,13 +8,15 @@
 
   const initialTextAreaJson = JSON.stringify(data);
   let title;
-  const maxColumns = 10;
+  const maxColumns = 12;
   const maxRows = 10;
 
   const totalHeight = 71;
   const totalWidth = 99.5;
   const minWidth = 5;
   const minHeight = 10;
+  const titleY = minHeight / 6;
+  const nameY = minHeight / 3;
 
   function onTextAreaChange() {
     updateMap();
@@ -65,6 +67,8 @@
         data.courses[index] = data.courses[index].slice(0, maxRows);
       }
 
+      const y = totalHeight / data.courses[index].length;
+
       const group = resultSvg.append("g");
       group
         .selectAll()
@@ -74,7 +78,7 @@
         .attr("width", elementWidth)
         .attr("height", elementHeight)
         .attr("x", (d, i) => index * (elementWidth + elementX))
-        .attr("y", (d, i) => i * (elementHeight + elementY) + 3.75)
+        .attr("y", (d, i) => i * y + y / 2)
         .attr("rx", elementRadius)
         .attr("fill-opacity", 0)
         .attr("stroke", "black")
@@ -88,7 +92,7 @@
         .enter()
         .append("text")
         .attr("x", (d, i) => index * (elementWidth + elementX) + titleBX)
-        .attr("y", (d, i) => i * (elementHeight + elementY) + titleBY + 3.75)
+        .attr("y", (d, i) => i * y + y / 2 + titleY)
         .attr("font-family", "monospace")
         .attr("font-size", (d, i) => fontSize)
         .attr("text-anchor", "middle")
@@ -100,7 +104,7 @@
         .enter()
         .append("text")
         .attr("x", (d, i) => index * (elementWidth + elementX) + nameBX)
-        .attr("y", (d, i) => i * (elementHeight + elementY) + nameBY + 3.75)
+        .attr("y", (d, i) => i * y + y / 2 + nameY)
         .attr("font-family", "monospace")
         .attr("font-size", (d, i) => fontSize)
         .attr("text-anchor", "middle")
