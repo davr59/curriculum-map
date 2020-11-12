@@ -13,6 +13,15 @@
       { "code": "IC1803", "name": "TALLER DE PROGRAMACION" },
       { "code": "MA1403", "name": "MATEMATICA DISCRETA" },
       { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I" }
+    ],
+    [
+      { "code": "CI1230", "name": "INGLES I" },
+      { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA" },
+      { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS" },
+      { "code": "IC2101", "name": "PROGRAMACION ORIENTADA A OBJETOS" },
+      { "code": "IC3101", "name": "ARQUITECTURA DE COMPUTADORES" },
+      { "code": "MA1102", "name": "CALCULO DIFERENCIAL E INTEGRAL" },
+      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I" }
     ]
   ]
 }
