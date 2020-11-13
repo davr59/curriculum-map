@@ -17,6 +17,18 @@
   const minHeight = 10;
   const titleY = minHeight / 6;
   const nameY = minHeight / 3;
+  const elementWidth = 10;
+  const elementHeight = 5;
+  const elementRadius = 1;
+  const elementX = elementWidth * 0.4;
+  const elementY = elementHeight / 4;
+  const strokeWidth = 0.03;
+  const fontSize = elementWidth / 15;
+  const titleBX = elementWidth / 2;
+  const titleBY = elementHeight / 3;
+  const nameBX = elementWidth / 2;
+  const nameBY = (elementHeight / 3) * 2;
+  const maxLength = 22;
 
   function onTextAreaChange() {
     updateMap();
@@ -30,19 +42,6 @@
     textAreaJson = initialTextAreaJson;
     updateMap();
   });
-
-  const elementWidth = 10;
-  const elementHeight = 5;
-  const elementRadius = 1;
-  const elementX = elementWidth * 0.4;
-  const elementY = elementHeight / 4;
-  const strokeWidth = 0.03;
-  const fontSize = elementWidth / 15;
-  const titleBX = elementWidth / 2;
-  const titleBY = elementHeight / 3;
-  const nameBX = elementWidth / 2;
-  const nameBY = (elementHeight / 3) * 2;
-  const maxLength = 22;
 
   function updateMap() {
     const data = JSON.parse(textAreaJson);
@@ -121,7 +120,7 @@
   }
 
   function buildResultNodeSvg(container) {
-    return container.append("svg").attr("viewBox", "-0.1 -0.1 100 75");
+    return container.append("svg").attr("viewBox", "0 0 100 75");
   }
 
   function buildText(text) {
