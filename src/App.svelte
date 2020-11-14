@@ -3,14 +3,18 @@
   import * as d3 from "d3";
   import data from "./data.json";
 
-  let result;
+  let map;
+  let svg;
   let textAreaJson;
-
   const initialTextAreaJson = JSON.stringify(data);
-  let title;
+
+  const fontFamily = "monospace";
+  const maxLabelLength = 22;
   const maxColumns = 12;
   const maxRows = 10;
+  const transitionDuration = 2500;
 
+  const labelFontSize = 0.7;
   const totalHeight = 71;
   const totalWidth = 99.5;
   const minWidth = 5;
@@ -23,111 +27,110 @@
   const elementX = elementWidth * 0.4;
   const elementY = elementHeight / 4;
   const strokeWidth = 0.03;
-  const fontSize = elementWidth / 15;
   const titleBX = elementWidth / 2;
   const titleBY = elementHeight / 3;
   const nameBX = elementWidth / 2;
   const nameBY = (elementHeight / 3) * 2;
-  const maxLength = 22;
 
-  function onTextAreaChange() {
-    updateMap();
-  }
-
-  function print() {
-    window.print();
-  }
-
-  onMount(async () => {
-    textAreaJson = initialTextAreaJson;
-    updateMap();
-  });
-
-  function updateMap() {
+  function updateMap(isAnimated = true) {
     const data = JSON.parse(textAreaJson);
-    const resultNode = getResultNode();
-    const resultSvg = buildResultNodeSvg(resultNode);
 
-    resultSvg
+    svg.html("");
+    svg
       .append("text")
       .text(data.title || "")
       .attr("x", "50%")
       .attr("y", 1.5)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .attr("font-family", "monospace")
+      .attr("font-family", fontFamily)
       .attr("font-size", 2.5);
 
     const columns =
       data.courses.length > maxColumns ? maxColumns : data.courses.length;
-
     for (let index = 0; index < columns; index++) {
       if (data.courses[index].length > maxRows) {
         data.courses[index] = data.courses[index].slice(0, maxRows);
       }
 
       const y = totalHeight / data.courses[index].length;
+      const group = svg.append("g");
 
-      const group = resultSvg.append("g");
-      group
-        .selectAll()
-        .data(data.courses[index])
-        .enter()
-        .append("rect")
-        .attr("width", elementWidth)
-        .attr("height", elementHeight)
-        .attr("x", (d, i) => index * (elementWidth + elementX))
-        .attr("y", (d, i) => i * y + y / 2)
-        .attr("rx", elementRadius)
-        .attr("fill-opacity", 0)
-        .attr("stroke", "black")
-        .attr("stroke-width", strokeWidth)
-        .transition()
-        .attr("fill", "green")
-        .duration(5000);
+      drawRect(group, data.courses[index], index, y);
+
       group
         .selectAll()
         .data(data.courses[index])
         .enter()
         .append("text")
-        .attr("x", (d, i) => index * (elementWidth + elementX) + titleBX)
+        .attr("x", index * (elementWidth + elementX) + titleBX)
         .attr("y", (d, i) => i * y + y / 2 + titleY)
-        .attr("font-family", "monospace")
-        .attr("font-size", (d, i) => fontSize)
+        .attr("font-family", fontFamily)
+        .attr("font-size", (d, i) => labelFontSize)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
-        .text((d, i) => buildText(d.code));
+        .text((d, i) => buildText(d.code, maxLabelLength));
       group
         .selectAll()
         .data(data.courses[index])
         .enter()
         .append("text")
-        .attr("x", (d, i) => index * (elementWidth + elementX) + nameBX)
+        .attr("x", index * (elementWidth + elementX) + nameBX)
         .attr("y", (d, i) => i * y + y / 2 + nameY)
-        .attr("font-family", "monospace")
-        .attr("font-size", (d, i) => fontSize)
+        .attr("font-family", fontFamily)
+        .attr("font-size", (d, i) => labelFontSize)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
-        .text((d, i) => buildText(d.name));
+        .text((d, i) => buildText(d.name, maxLabelLength));
     }
   }
 
-  function getResultNode() {
-    const resultNode = d3.select(result);
-    resultNode.html("");
-    resultNode.style("width", "100vw").style("height", "100vh");
-    return resultNode;
+  function drawRect(group, data, index, y) {
+    return group
+      .selectAll()
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("width", elementWidth)
+      .attr("height", elementHeight)
+      .attr("x", index * (elementWidth + elementX))
+      .attr("y", (d, i) => i * y + y / 2)
+      .attr("rx", elementRadius)
+      .attr("fill", "white")
+      .attr("stroke", "black")
+      .attr("stroke-width", strokeWidth)
+      .transition()
+      .attr("fill", d => (d.done ? "green" : "white"))
+      .duration(transitionDuration * (index + 1));
   }
 
-  function buildResultNodeSvg(container) {
-    return container.append("svg").attr("viewBox", "0 0 100 75");
-  }
-
-  function buildText(text) {
-    return text.length <= maxLength
+  function buildText(text, maxTextLength) {
+    return text.length <= maxTextLength
       ? text
-      : `${text.substr(0, maxLength - 3)}...`;
+      : `${text.substr(0, maxTextLength - 3)}...`;
   }
+
+  function onTextAreaChange() {
+    updateMap();
+  }
+
+  function animate() {}
+
+  function print() {
+    window.print();
+  }
+
+  function buildSvg() {
+    const mapNode = d3.select(map);
+    mapNode.style("width", "100vw").style("height", "100vh");
+    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
+  }
+
+  onMount(async () => {
+    textAreaJson = initialTextAreaJson;
+    svg = buildSvg();
+    updateMap();
+  });
 </script>
 
 <style>
@@ -150,6 +153,9 @@
   }
   button {
     margin: 0 0 16px 0;
+  }
+  .buttonAnimate {
+    margin-right: 1px;
   }
   .divMap {
   }
@@ -174,10 +180,11 @@
           bind:value={textAreaJson}
           on:keyup={onTextAreaChange} />
       </div>
+      <button class="buttonAnimate" on:click={animate}>Animar | Animate</button>
       <button on:click={print}>Imprimir | Print</button>
     </form>
   </div>
   <div class={'divMap'}>
-    <div bind:this={result} />
+    <div bind:this={map} />
   </div>
 </main>

@@ -2,20 +2,20 @@
   "title": "BACHILLERATO EN INGENIERÍA EN COMPUTACIÓN",
   "courses": [
     [
-      { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO" },
-      { "code": "CI0202", "name": "INGLES BASICO" },
-      { "code": "MA0101", "name": "MATEMATICA GENERAL" }
+      { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO", "done": 1 },
+      { "code": "CI0202", "name": "INGLES BASICO", "done": 1 },
+      { "code": "MA0101", "name": "MATEMATICA GENERAL", "done": 1 }
     ],
     [
-      { "code": "CI1106", "name": "COMUNICACION ESCRITA" },
-      { "code": "IC1400", "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS" },
+      { "code": "CI1106", "name": "COMUNICACION ESCRITA", "done": 1 },
+      { "code": "IC1400", "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS", "done": 1 },
       { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION" },
       { "code": "IC1803", "name": "TALLER DE PROGRAMACION" },
       { "code": "MA1403", "name": "MATEMATICA DISCRETA" },
       { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I" }
     ],
     [
-      { "code": "CI1230", "name": "INGLES I" },
+      { "code": "CI1230", "name": "INGLES I", "done": 1 },
       { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA" },
       { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS" },
       { "code": "IC2101", "name": "PROGRAMACION ORIENTADA A OBJETOS" },
