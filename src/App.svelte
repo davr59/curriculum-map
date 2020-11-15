@@ -6,14 +6,14 @@
   let map;
   let svg;
   let textAreaJson;
-  const initialTextAreaJson = JSON.stringify(data);
   let isColoredEnabled;
   let isCompletedEnabled;
+  let isJsonError;
 
   const fontFamily = "monospace";
-  const maxLabelLength = 22;
   const maxColumns = 12;
   const maxRows = 10;
+  const maxTextLength = 22;
   const transitionDuration = 3000;
 
   const labelFontSize = 0.6;
@@ -36,25 +36,27 @@
   const nameBY = (elementHeight / 3) * 2;
 
   onMount(async () => {
-    textAreaJson = initialTextAreaJson;
+    textAreaJson = JSON.stringify(data);
     isColoredEnabled = true;
     isCompletedEnabled = true;
-    svg = buildSvg();
+    isJsonError = false;
+    svg = _buildSvg();
   });
 
   afterUpdate(() => {
     refreshMap();
   });
 
-  function buildSvg() {
-    const mapNode = d3.select(map);
-    mapNode.style("width", "100vw").style("height", "100vh");
-    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
+  function print() {
+    window.print();
   }
 
   function refreshMap() {
-    const data = JSON.parse(textAreaJson);
-    drawTitle(svg, data.title);
+    const data = _parseJson(textAreaJson);
+    if (!data) {
+      return;
+    }
+    _drawTitle(svg, data.title);
 
     const columns =
       data.courses.length > maxColumns ? maxColumns : data.courses.length;
@@ -66,12 +68,30 @@
       const y = totalHeight / data.courses[index].length;
       const group = svg.append("g");
 
-      drawRect(group, data.courses[index], index, y, data.colorsByCode);
-      drawText(group, data.courses[index], index, y);
+      _drawRect(group, data.courses[index], index, y, data.colorsByCode);
+      _drawText(group, data.courses[index], index, y);
     }
   }
 
-  function drawTitle(svg, title) {
+  function _buildSvg() {
+    const mapNode = d3.select(map);
+    mapNode.style("width", "100vw").style("height", "100vh");
+    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
+  }
+
+  function _parseJson(json) {
+    try {
+      const data = JSON.parse(json);
+      isJsonError = false;
+      return data;
+    } catch (e) {
+      console.log(e);
+      isJsonError = true;
+      return undefined;
+    }
+  }
+
+  function _drawTitle(svg, title) {
     svg.html("");
     svg
       .append("text")
@@ -84,7 +104,7 @@
       .attr("font-size", 2.5);
   }
 
-  function drawRect(group, courses, index, y, colorsByCode) {
+  function _drawRect(group, courses, index, y, colorsByCode) {
     return group
       .selectAll()
       .data(courses)
@@ -95,15 +115,15 @@
       .attr("x", index * (elementWidth + elementX))
       .attr("y", (d, i) => i * y + y / 2)
       .attr("rx", elementRadius)
-      .attr("fill", d => buildRectColor(d.code, colorsByCode))
+      .attr("fill", d => _buildRectColor(d.code, colorsByCode))
       .attr("stroke", "black")
       .attr("stroke-width", strokeWidth)
       .transition()
-      .attr("fill", d => buildRectColor(d.code, colorsByCode))
+      .attr("fill", d => _buildRectColor(d.code, colorsByCode))
       .duration(transitionDuration * (index + 1));
   }
 
-  function buildRectColor(code, colorsByCode) {
+  function _buildRectColor(code, colorsByCode) {
     let defaultColor = "white";
     if (!isColoredEnabled || !code || !colorsByCode) {
       return defaultColor;
@@ -115,7 +135,7 @@
     return (entry && entry[1]) || defaultColor;
   }
 
-  function drawText(group, courses, index, y) {
+  function _drawText(group, courses, index, y) {
     group
       .selectAll()
       .data(courses)
@@ -139,7 +159,7 @@
       .attr("font-size", (d, i) => labelFontSize)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .text((d, i) => buildText1(d.name, maxLabelLength));
+      .text((d, i) => _buildText1(d.name, maxTextLength));
     group
       .selectAll()
       .data(courses)
@@ -151,10 +171,10 @@
       .attr("font-size", (d, i) => labelFontSize)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .text((d, i) => buildText2(d.name, maxLabelLength));
+      .text((d, i) => _buildText2(d.name, maxTextLength));
   }
 
-  function buildText1(text, maxTextLength) {
+  function _buildText1(text, maxTextLength) {
     if (text.length <= maxTextLength) {
       return text;
     } else {
@@ -165,7 +185,7 @@
     }
   }
 
-  function buildText2(text, maxTextLength) {
+  function _buildText2(text, maxTextLength) {
     if (text.length <= maxTextLength) {
       return "";
     } else {
@@ -176,10 +196,6 @@
         ? subtext
         : `${subtext.substr(0, maxTextLength - 3)}...`;
     }
-  }
-
-  function print() {
-    window.print();
   }
 </script>
 
@@ -201,19 +217,27 @@
     width: 100%;
     margin: 0;
   }
-  button {
-    margin: 0 0 16px 0;
+  .jsonErrorTextArea {
+    border: 2px solid #ff3e00;
+    border-radius: 4px;
+    outline: none;
   }
-  .separatorButton {
-    margin-left: 1px;
-  }
-  .separatorCheckBox {
-    margin-left: 10px;
+  .jsonErrorMessage {
+    color: #ff3e00;
   }
   .divCheckBox {
     display: flex;
     justify-content: center;
     margin: 0 0 16px 0;
+  }
+  .separatorLabel {
+    margin-right: 10px;
+  }
+  button {
+    margin: 0 0 16px 0;
+  }
+  .separatorButton {
+    margin-right: 1px;
   }
   .divMap {
   }
@@ -232,25 +256,33 @@
     <form>
       <h1>MAPA DE CURSOS | COURSES MAP</h1>
       <div class={'divTextArea'}>
-        <textarea placeholder="JSON" rows="8" bind:value={textAreaJson} />
+        <textarea
+          class:jsonErrorTextArea={isJsonError}
+          placeholder="JSON"
+          rows="8"
+          bind:value={textAreaJson} />
+        {#if isJsonError}
+          <span class="jsonErrorMessage">
+            Error del formato JSON | JSON format error
+          </span>
+        {:else}Datos en formato JSON | Data in JSON format{/if}
       </div>
       <div class="divCheckBox">
-        <label>
+        <label class="separatorLabel">
           <input type="checkbox" bind:checked={isColoredEnabled} />
           Mostrar colores | Show colors
         </label>
         <label>
-          <input
-            class="separatorCheckBox"
-            type="checkbox"
-            bind:checked={isCompletedEnabled} />
+          <input type="checkbox" bind:checked={isCompletedEnabled} />
           Mostrar completado | Show completed
         </label>
       </div>
-      <button type="button" on:click={refreshMap}>Animar | Animate</button>
-      <button type="button" class="separatorButton" on:click={print}>
-        Imprimir | Print
-      </button>
+      {#if isCompletedEnabled}
+        <button type="button" class="separatorButton" on:click={refreshMap}>
+          Animar | Animate
+        </button>
+      {/if}
+      <button type="button" on:click={print}>Imprimir | Print</button>
     </form>
   </div>
   <div class={'divMap'}>
