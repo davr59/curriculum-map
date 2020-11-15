@@ -12,19 +12,20 @@
   const maxLabelLength = 22;
   const maxColumns = 12;
   const maxRows = 10;
-  const transitionDuration = 2500;
+  const transitionDuration = 3000;
 
-  const labelFontSize = 0.7;
+  const labelFontSize = 0.6;
   const totalHeight = 71;
   const totalWidth = 99.5;
   const minWidth = 5;
   const minHeight = 10;
-  const titleY = minHeight / 6;
-  const nameY = minHeight / 3;
-  const elementWidth = 10;
+  const titleY = minHeight / 6 + 0.25;
+  const nameY = minHeight / 3 - 0.25;
+  const name2Y = minHeight / 3 + 0.5;
+  const elementWidth = 8.5;
   const elementHeight = 5;
   const elementRadius = 1;
-  const elementX = elementWidth * 0.4;
+  const elementX = elementWidth * 0.3;
   const elementY = elementHeight / 4;
   const strokeWidth = 0.03;
   const titleBX = elementWidth / 2;
@@ -34,17 +35,7 @@
 
   function updateMap(isAnimated = true) {
     const data = JSON.parse(textAreaJson);
-
-    svg.html("");
-    svg
-      .append("text")
-      .text(data.title || "")
-      .attr("x", "50%")
-      .attr("y", 1.5)
-      .attr("text-anchor", "middle")
-      .attr("dominant-baseline", "middle")
-      .attr("font-family", fontFamily)
-      .attr("font-size", 2.5);
+    drawTitle(svg, data);
 
     const columns =
       data.courses.length > maxColumns ? maxColumns : data.courses.length;
@@ -57,32 +48,21 @@
       const group = svg.append("g");
 
       drawRect(group, data.courses[index], index, y);
-
-      group
-        .selectAll()
-        .data(data.courses[index])
-        .enter()
-        .append("text")
-        .attr("x", index * (elementWidth + elementX) + titleBX)
-        .attr("y", (d, i) => i * y + y / 2 + titleY)
-        .attr("font-family", fontFamily)
-        .attr("font-size", (d, i) => labelFontSize)
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .text((d, i) => buildText(d.code, maxLabelLength));
-      group
-        .selectAll()
-        .data(data.courses[index])
-        .enter()
-        .append("text")
-        .attr("x", index * (elementWidth + elementX) + nameBX)
-        .attr("y", (d, i) => i * y + y / 2 + nameY)
-        .attr("font-family", fontFamily)
-        .attr("font-size", (d, i) => labelFontSize)
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .text((d, i) => buildText(d.name, maxLabelLength));
+      drawText(group, data.courses[index], index, y);
     }
+  }
+
+  function drawTitle(svg, data) {
+    svg.html("");
+    svg
+      .append("text")
+      .text(data.title || "")
+      .attr("x", "50%")
+      .attr("y", 1.5)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .attr("font-family", fontFamily)
+      .attr("font-size", 2.5);
   }
 
   function drawRect(group, data, index, y) {
@@ -100,14 +80,71 @@
       .attr("stroke", "black")
       .attr("stroke-width", strokeWidth)
       .transition()
-      .attr("fill", d => (d.done ? "green" : "white"))
+      .attr("fill", d => (true ? d.color || "green" : "white"))
       .duration(transitionDuration * (index + 1));
   }
 
-  function buildText(text, maxTextLength) {
-    return text.length <= maxTextLength
-      ? text
-      : `${text.substr(0, maxTextLength - 3)}...`;
+  function drawText(group, data, index, y) {
+    group
+      .selectAll()
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("x", index * (elementWidth + elementX) + titleBX)
+      .attr("y", (d, i) => i * y + y / 2 + titleY)
+      .attr("font-family", fontFamily)
+      .attr("font-size", (d, i) => labelFontSize)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .text((d, i) => d.code);
+    group
+      .selectAll()
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("x", index * (elementWidth + elementX) + nameBX)
+      .attr("y", (d, i) => i * y + y / 2 + nameY)
+      .attr("font-family", fontFamily)
+      .attr("font-size", (d, i) => labelFontSize)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .text((d, i) => buildText1(d.name, maxLabelLength));
+    group
+      .selectAll()
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("x", index * (elementWidth + elementX) + nameBX)
+      .attr("y", (d, i) => i * y + y / 2 + name2Y)
+      .attr("font-family", fontFamily)
+      .attr("font-size", (d, i) => labelFontSize)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .text((d, i) => buildText2(d.name, maxLabelLength));
+  }
+
+  function buildText1(text, maxTextLength) {
+    if (text.length <= maxTextLength) {
+      return text;
+    } else {
+      let subtext = text.substr(0, maxTextLength);
+      const blankIndex = subtext.lastIndexOf(" ");
+      subtext = subtext.substr(0, blankIndex + 1).trim();
+      return subtext;
+    }
+  }
+
+  function buildText2(text, maxTextLength) {
+    if (text.length <= maxTextLength) {
+      return "";
+    } else {
+      let subtext = text.substr(0, maxTextLength);
+      const blankIndex = subtext.lastIndexOf(" ");
+      subtext = text.substr(blankIndex, text.length).trim();
+      return subtext.length <= maxTextLength
+        ? subtext
+        : `${subtext.substr(0, maxTextLength - 3)}...`;
+    }
   }
 
   function onTextAreaChange() {

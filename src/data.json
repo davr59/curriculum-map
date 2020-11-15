@@ -2,26 +2,72 @@
   "title": "BACHILLERATO EN INGENIERÍA EN COMPUTACIÓN",
   "courses": [
     [
-      { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO", "done": 1 },
-      { "code": "CI0202", "name": "INGLES BASICO", "done": 1 },
-      { "code": "MA0101", "name": "MATEMATICA GENERAL", "done": 1 }
+      { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO", "color": "lightskyblue" },
+      { "code": "CI0202", "name": "INGLES BASICO", "color": "lightskyblue" },
+      { "code": "MA0101", "name": "MATEMATICA GENERAL", "color": "lightcoral" }
     ],
     [
-      { "code": "CI1106", "name": "COMUNICACION ESCRITA", "done": 1 },
-      { "code": "IC1400", "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS", "done": 1 },
-      { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION" },
-      { "code": "IC1803", "name": "TALLER DE PROGRAMACION" },
-      { "code": "MA1403", "name": "MATEMATICA DISCRETA" },
-      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I" }
+      { "code": "CI1106", "name": "COMUNICACION ESCRITA", "color": "lightskyblue" },
+      {
+        "code": "IC1400",
+        "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS",
+        "color": "mediumseagreen"
+      },
+      { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION", "color": "mediumseagreen" },
+      { "code": "IC1803", "name": "TALLER DE PROGRAMACION", "color": "mediumseagreen" },
+      { "code": "MA1403", "name": "MATEMATICA DISCRETA", "color": "lightcoral" },
+      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I", "color": "lightsalmon" }
     ],
     [
-      { "code": "CI1230", "name": "INGLES I", "done": 1 },
-      { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA" },
-      { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS" },
-      { "code": "IC2101", "name": "PROGRAMACION ORIENTADA A OBJETOS" },
-      { "code": "IC3101", "name": "ARQUITECTURA DE COMPUTADORES" },
-      { "code": "MA1102", "name": "CALCULO DIFERENCIAL E INTEGRAL" },
-      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I" }
-    ]
+      { "code": "CI1230", "name": "INGLES I", "color": "lightskyblue" },
+      { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA", "color": "orchid" },
+      { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS", "color": "mediumseagreen" },
+      { "code": "IC2101", "name": "PROGRAMACION ORIENTADA A OBJETOS", "color": "mediumseagreen" },
+      { "code": "IC3101", "name": "ARQUITECTURA DE COMPUTADORES", "color": "mediumseagreen" },
+      { "code": "MA1102", "name": "CALCULO DIFERENCIAL E INTEGRAL", "color": "lightcoral" },
+      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I", "color": "lightsalmon" }
+    ],
+    [
+      { "code": "CI1107", "name": "COMUNICACION ORAL", "color": "lightskyblue" },
+      { "code": "CI1231", "name": "INGLES II", "color": "lightskyblue" },
+      { "code": "IC3002", "name": "ANALISIS DE ALGORITMOS", "color": "mediumseagreen" },
+      { "code": "IC4301", "name": "BASES DE DATOS I", "color": "mediumseagreen" },
+      { "code": "MA1103", "name": "CALCULO Y ALGEBRA LINEAL", "color": "lightcoral" },
+      { "code": "SE1400", "name": "ACTIVIDAD CULTURAL-DEPORTIVA", "color": "lightsalmon" }
+    ],
+    [
+      { "code": "CS2101", "name": "AMBIENTE HUMANO", "color": "gold" },
+      { "code": "IC4302", "name": "BASES DE DATOS II", "color": "mediumseagreen" },
+      { "code": "IC4700", "name": "LENGUAJES DE PROGRAMACION", "color": "mediumseagreen" },
+      { "code": "IC5821", "name": "REQUERIMIENTOS DE SOFTWARE", "color": "mediumseagreen" },
+      { "code": "MA2404", "name": "PROBABILIDADES", "color": "lightcoral" }
+    ],
+    [
+      { "code": "CS3401", "name": "SEMINARIO DE ESTUDIOS FILOSOFICOS HISTORICOS", "color": "gold" },
+      { "code": "IC4810", "name": "ADMINISTRACION DE PROYECTOS", "color": "mediumseagreen" },
+      { "code": "IC5701", "name": "COMPILADORES E INTERPRETES", "color": "mediumseagreen" },
+      { "code": "IC6821", "name": "DISEÑO DE SOFTWARE", "color": "mediumseagreen" },
+      { "code": "MA3405", "name": "ESTADISTICA", "color": "lightcoral" }
+    ],
+    [
+      { "code": "CS4402", "name": "SEMINARIO DE ESTUDIOS COSTARRICENSES", "color": "gold" },
+      { "code": "IC4003", "name": "ELECTIVA I", "color": "mediumseagreen" },
+      { "code": "IC6400", "name": "INVESTIGACION DE OPERACIONES", "color": "mediumseagreen" },
+      { "code": "IC6600", "name": "PRINCIPIOS DE SISTEMAS OPERATIVOS", "color": "mediumseagreen" },
+      {
+        "code": "IC6831",
+        "name": "ASEGURAMIENTO DE LA CALIDAD DEL SOFTWARE",
+        "color": "mediumseagreen"
+      },
+      { "code": "IC7900", "name": "COMPUTACION Y SOCIEDAD", "color": "mediumseagreen" }
+    ],
+    [
+      { "code": "AE4208", "name": "DESARROLLO DE EMPRENDEDORES", "color": "Tan" },
+      { "code": "IC5001", "name": "ELECTIVA II", "color": "mediumseagreen" },
+      { "code": "IC6200", "name": "INTELIGENCIA ARTIFICIAL", "color": "mediumseagreen" },
+      { "code": "IC7602", "name": "REDES", "color": "mediumseagreen" },
+      { "code": "IC7841", "name": "PROYECTO DE INGENIERIA DE SOFTWARE", "color": "mediumseagreen" }
+    ],
+    [{ "code": "IC8842", "name": "PRACTICA PROFESIONAL", "color": "mediumseagreen" }]
   ]
 }
