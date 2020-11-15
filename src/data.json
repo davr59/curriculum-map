@@ -16,7 +16,7 @@
       { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION", "color": "mediumseagreen" },
       { "code": "IC1803", "name": "TALLER DE PROGRAMACION", "color": "mediumseagreen" },
       { "code": "MA1403", "name": "MATEMATICA DISCRETA", "color": "lightcoral" },
-      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I", "color": "lightsalmon" }
+      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I", "color": "coral" }
     ],
     [
       { "code": "CI1230", "name": "INGLES I", "color": "lightskyblue" },
@@ -25,7 +25,7 @@
       { "code": "IC2101", "name": "PROGRAMACION ORIENTADA A OBJETOS", "color": "mediumseagreen" },
       { "code": "IC3101", "name": "ARQUITECTURA DE COMPUTADORES", "color": "mediumseagreen" },
       { "code": "MA1102", "name": "CALCULO DIFERENCIAL E INTEGRAL", "color": "lightcoral" },
-      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I", "color": "lightsalmon" }
+      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I", "color": "coral" }
     ],
     [
       { "code": "CI1107", "name": "COMUNICACION ORAL", "color": "lightskyblue" },
@@ -33,7 +33,7 @@
       { "code": "IC3002", "name": "ANALISIS DE ALGORITMOS", "color": "mediumseagreen" },
       { "code": "IC4301", "name": "BASES DE DATOS I", "color": "mediumseagreen" },
       { "code": "MA1103", "name": "CALCULO Y ALGEBRA LINEAL", "color": "lightcoral" },
-      { "code": "SE1400", "name": "ACTIVIDAD CULTURAL-DEPORTIVA", "color": "lightsalmon" }
+      { "code": "SE1400", "name": "ACTIVIDAD CULTURAL-DEPORTIVA", "color": "coral" }
     ],
     [
       { "code": "CS2101", "name": "AMBIENTE HUMANO", "color": "gold" },
@@ -62,7 +62,7 @@
       { "code": "IC7900", "name": "COMPUTACION Y SOCIEDAD", "color": "mediumseagreen" }
     ],
     [
-      { "code": "AE4208", "name": "DESARROLLO DE EMPRENDEDORES", "color": "Tan" },
+      { "code": "AE4208", "name": "DESARROLLO DE EMPRENDEDORES", "color": "chocolate" },
       { "code": "IC5001", "name": "ELECTIVA II", "color": "mediumseagreen" },
       { "code": "IC6200", "name": "INTELIGENCIA ARTIFICIAL", "color": "mediumseagreen" },
       { "code": "IC7602", "name": "REDES", "color": "mediumseagreen" },
