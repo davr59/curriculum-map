@@ -35,7 +35,7 @@
 
   function updateMap(isAnimated = true) {
     const data = JSON.parse(textAreaJson);
-    drawTitle(svg, data);
+    drawTitle(svg, data.title);
 
     const columns =
       data.courses.length > maxColumns ? maxColumns : data.courses.length;
@@ -47,16 +47,16 @@
       const y = totalHeight / data.courses[index].length;
       const group = svg.append("g");
 
-      drawRect(group, data.courses[index], index, y);
+      drawRect(group, data.courses[index], index, y, data.colorsByCode);
       drawText(group, data.courses[index], index, y);
     }
   }
 
-  function drawTitle(svg, data) {
+  function drawTitle(svg, title) {
     svg.html("");
     svg
       .append("text")
-      .text(data.title || "")
+      .text(title || "")
       .attr("x", "50%")
       .attr("y", 1.5)
       .attr("text-anchor", "middle")
@@ -65,10 +65,10 @@
       .attr("font-size", 2.5);
   }
 
-  function drawRect(group, data, index, y) {
+  function drawRect(group, courses, index, y, colorsByCode) {
     return group
       .selectAll()
-      .data(data)
+      .data(courses)
       .enter()
       .append("rect")
       .attr("width", elementWidth)
@@ -76,18 +76,30 @@
       .attr("x", index * (elementWidth + elementX))
       .attr("y", (d, i) => i * y + y / 2)
       .attr("rx", elementRadius)
-      .attr("fill", "white")
+      .attr("fill", d => buildRectColor(d.code, colorsByCode))
       .attr("stroke", "black")
       .attr("stroke-width", strokeWidth)
       .transition()
-      .attr("fill", d => (true ? d.color || "green" : "white"))
+      .attr("fill", d => buildRectColor(d.code, colorsByCode))
       .duration(transitionDuration * (index + 1));
   }
 
-  function drawText(group, data, index, y) {
+  function buildRectColor(code, colorsByCode) {
+    let defaultColor = "white";
+    if (!code || !colorsByCode) {
+      return defaultColor;
+    }
+    if (colorsByCode.default) {
+      defaultColor = colorsByCode.default;
+    }
+    const entry = Object.entries(colorsByCode).find(m => code.startsWith(m[0]));
+    return (entry && entry[1]) || defaultColor;
+  }
+
+  function drawText(group, courses, index, y) {
     group
       .selectAll()
-      .data(data)
+      .data(courses)
       .enter()
       .append("text")
       .attr("x", index * (elementWidth + elementX) + titleBX)
@@ -99,7 +111,7 @@
       .text((d, i) => d.code);
     group
       .selectAll()
-      .data(data)
+      .data(courses)
       .enter()
       .append("text")
       .attr("x", index * (elementWidth + elementX) + nameBX)
@@ -111,7 +123,7 @@
       .text((d, i) => buildText1(d.name, maxLabelLength));
     group
       .selectAll()
-      .data(data)
+      .data(courses)
       .enter()
       .append("text")
       .attr("x", index * (elementWidth + elementX) + nameBX)
