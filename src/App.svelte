@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import * as d3 from "d3";
   import data from "./data.json";
 
@@ -7,6 +7,8 @@
   let svg;
   let textAreaJson;
   const initialTextAreaJson = JSON.stringify(data);
+  let isColoredEnabled;
+  let isCompletedEnabled;
 
   const fontFamily = "monospace";
   const maxLabelLength = 22;
@@ -33,7 +35,24 @@
   const nameBX = elementWidth / 2;
   const nameBY = (elementHeight / 3) * 2;
 
-  function updateMap(isAnimated = true) {
+  onMount(async () => {
+    textAreaJson = initialTextAreaJson;
+    isColoredEnabled = true;
+    isCompletedEnabled = true;
+    svg = buildSvg();
+  });
+
+  afterUpdate(() => {
+    refreshMap();
+  });
+
+  function buildSvg() {
+    const mapNode = d3.select(map);
+    mapNode.style("width", "100vw").style("height", "100vh");
+    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
+  }
+
+  function refreshMap() {
     const data = JSON.parse(textAreaJson);
     drawTitle(svg, data.title);
 
@@ -86,7 +105,7 @@
 
   function buildRectColor(code, colorsByCode) {
     let defaultColor = "white";
-    if (!code || !colorsByCode) {
+    if (!isColoredEnabled || !code || !colorsByCode) {
       return defaultColor;
     }
     if (colorsByCode.default) {
@@ -159,27 +178,9 @@
     }
   }
 
-  function onTextAreaChange() {
-    updateMap();
-  }
-
-  function animate() {}
-
   function print() {
     window.print();
   }
-
-  function buildSvg() {
-    const mapNode = d3.select(map);
-    mapNode.style("width", "100vw").style("height", "100vh");
-    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
-  }
-
-  onMount(async () => {
-    textAreaJson = initialTextAreaJson;
-    svg = buildSvg();
-    updateMap();
-  });
 </script>
 
 <style>
@@ -203,8 +204,16 @@
   button {
     margin: 0 0 16px 0;
   }
-  .buttonAnimate {
-    margin-right: 1px;
+  .separatorButton {
+    margin-left: 1px;
+  }
+  .separatorCheckBox {
+    margin-left: 10px;
+  }
+  .divCheckBox {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 16px 0;
   }
   .divMap {
   }
@@ -223,14 +232,25 @@
     <form>
       <h1>MAPA DE CURSOS | COURSES MAP</h1>
       <div class={'divTextArea'}>
-        <textarea
-          placeholder="JSON"
-          rows="8"
-          bind:value={textAreaJson}
-          on:keyup={onTextAreaChange} />
+        <textarea placeholder="JSON" rows="8" bind:value={textAreaJson} />
       </div>
-      <button class="buttonAnimate" on:click={animate}>Animar | Animate</button>
-      <button on:click={print}>Imprimir | Print</button>
+      <div class="divCheckBox">
+        <label>
+          <input type="checkbox" bind:checked={isColoredEnabled} />
+          Mostrar colores | Show colors
+        </label>
+        <label>
+          <input
+            class="separatorCheckBox"
+            type="checkbox"
+            bind:checked={isCompletedEnabled} />
+          Mostrar completado | Show completed
+        </label>
+      </div>
+      <button type="button" on:click={refreshMap}>Animar | Animate</button>
+      <button type="button" class="separatorButton" on:click={print}>
+        Imprimir | Print
+      </button>
     </form>
   </div>
   <div class={'divMap'}>
