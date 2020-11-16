@@ -142,7 +142,11 @@
       .enter()
       .append("text")
       .attr("x", index * (elementWidth + elementX) + titleBX)
-      .attr("y", (d, i) => i * y + y / 2 + titleY)
+      .attr("y", (d, i) =>
+        d.name.length <= maxTextLength
+          ? i * y + y / 2 + titleY
+          : i * y + y / 2 + titleY - 0.5
+      )
       .attr("font-family", fontFamily)
       .attr("font-size", (d, i) => labelFontSize)
       .attr("text-anchor", "middle")
