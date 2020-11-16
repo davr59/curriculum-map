@@ -36,7 +36,7 @@
   const nameBY = (elementHeight / 3) * 2;
 
   onMount(async () => {
-    textAreaJson = JSON.stringify(data);
+    textAreaJson = JSON.stringify(data, undefined, "\t");
     isColoredEnabled = true;
     isCompletedEnabled = true;
     isJsonError = false;
