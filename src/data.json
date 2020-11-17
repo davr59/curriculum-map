@@ -41,19 +41,19 @@
       { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I" }
     ],
     [
-      { "code": "CI1107", "name": "COMUNICACION ORAL" },
-      { "code": "CI1231", "name": "INGLES II" },
-      { "code": "IC3002", "name": "ANALISIS DE ALGORITMOS" },
-      { "code": "IC4301", "name": "BASES DE DATOS I" },
-      { "code": "MA1103", "name": "CALCULO Y ALGEBRA LINEAL" },
+      { "code": "CI1231", "name": "INGLES II", "reqs": ["CI1230"] },
+      { "code": "CI1107", "name": "COMUNICACION ORAL", "reqs": ["CI1106"] },
+      { "code": "IC4301", "name": "BASES DE DATOS I", "reqs": ["IC2001"] },
+      { "code": "IC3002", "name": "ANALISIS DE ALGORITMOS", "reqs": ["IC2001", "MA1102"] },
+      { "code": "MA1103", "name": "CALCULO Y ALGEBRA LINEAL", "reqs": ["MA1102"] },
       { "code": "SE1400", "name": "ACTIVIDAD CULTURAL-DEPORTIVA" }
     ],
     [
-      { "code": "CS2101", "name": "AMBIENTE HUMANO" },
-      { "code": "IC4302", "name": "BASES DE DATOS II" },
-      { "code": "IC4700", "name": "LENGUAJES DE PROGRAMACION" },
-      { "code": "IC5821", "name": "REQUERIMIENTOS DE SOFTWARE" },
-      { "code": "MA2404", "name": "PROBABILIDADES" }
+      { "code": "CS2101", "name": "AMBIENTE HUMANO", "reqs": ["CI1107"] },
+      { "code": "IC4302", "name": "BASES DE DATOS II", "reqs": ["IC4301"] },
+      { "code": "IC5821", "name": "REQUERIMIENTOS DE SOFTWARE", "reqs": ["IC4301"] },
+      { "code": "IC4700", "name": "LENGUAJES DE PROGRAMACION", "reqs": ["IC3002", "IC3101"] },
+      { "code": "MA2404", "name": "PROBABILIDADES", "reqs": ["MA1103"] }
     ],
     [
       { "code": "CS3401", "name": "SEMINARIO DE ESTUDIOS FILOSOFICOS HISTORICOS" },
