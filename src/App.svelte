@@ -8,11 +8,12 @@
   let textAreaJson;
   let isColoredEnabled;
   let isCompletedEnabled;
+  let isRequirementsEnabled;
   let isJsonError;
 
   const fontFamily = "monospace";
-  const maxColumns = 12;
-  const maxRows = 10;
+  const maxColumnsCount = 12;
+  const maxRowsCount = 10;
   const maxTextLength = 22;
   const transitionDuration = 3000;
 
@@ -39,6 +40,7 @@
     textAreaJson = JSON.stringify(data, undefined, "\t");
     isColoredEnabled = true;
     isCompletedEnabled = true;
+    isRequirementsEnabled = true;
     isJsonError = false;
     svg = _buildSvg();
   });
@@ -56,20 +58,25 @@
     if (!data) {
       return;
     }
-    _drawTitle(svg, data.title);
-
-    const columns =
-      data.courses.length > maxColumns ? maxColumns : data.courses.length;
-    for (let index = 0; index < columns; index++) {
-      if (data.courses[index].length > maxRows) {
-        data.courses[index] = data.courses[index].slice(0, maxRows);
+    const group = _buildGroup(svg);
+    _drawTitle(group, data.title);
+    let oldLines = {};
+    const columnsCount =
+      data.courses.length > maxColumnsCount
+        ? maxColumnsCount
+        : data.courses.length;
+    for (let index = 0; index < columnsCount; index++) {
+      if (data.courses[index].length > maxRowsCount) {
+        data.courses[index] = data.courses[index].slice(0, maxRowsCount);
       }
-
       const y = totalHeight / data.courses[index].length;
-      const group = svg.append("g");
-
       _drawRect(group, data.courses[index], index, y, data.colorsByCode);
       _drawText(group, data.courses[index], index, y);
+      if (isRequirementsEnabled) {
+        const newLines = _buildLines(data.courses[index], index, y);
+        _drawLine(group, data.courses[index], oldLines, newLines);
+        oldLines = newLines;
+      }
     }
   }
 
@@ -91,9 +98,13 @@
     }
   }
 
-  function _drawTitle(svg, title) {
+  function _buildGroup(svg) {
     svg.html("");
-    svg
+    return svg.append("g");
+  }
+
+  function _drawTitle(group, title) {
+    group
       .append("text")
       .text(title || "")
       .attr("x", "50%")
@@ -201,6 +212,44 @@
         : `${subtext.substr(0, maxTextLength - 3)}...`;
     }
   }
+
+  function _buildLines(courses, index, y) {
+    const lines = {};
+    for (let i = 0; i < courses.length; i++) {
+      lines[courses[i].code.trim()] = {
+        x1: index * (elementWidth + elementX),
+        x2: index * (elementWidth + elementX) + elementWidth,
+        y: i * y + y / 2 + elementHeight / 2
+      };
+    }
+    return lines;
+  }
+
+  function _drawLine(group, courses, oldLines, newLines) {
+    if (
+      !oldLines ||
+      !newLines ||
+      Object.keys(oldLines) === 0 ||
+      Object.keys(newLines) === 0
+    ) {
+      return;
+    }
+    courses
+      .filter(m => m.reqs)
+      .forEach(m => {
+        group
+          .selectAll()
+          .data(m.reqs.filter(n => oldLines[n]))
+          .enter()
+          .append("line")
+          .attr("x1", (d, i) => oldLines[d.trim()].x2)
+          .attr("y1", (d, i) => oldLines[d.trim()].y)
+          .attr("x2", (d, i) => newLines[m.code.trim()].x1)
+          .attr("y2", (d, i) => newLines[m.code.trim()].y)
+          .attr("stroke", "black")
+          .attr("stroke-width", strokeWidth);
+      });
+  }
 </script>
 
 <style>
@@ -222,8 +271,7 @@
     margin: 0;
   }
   .jsonErrorTextArea {
-    border: 2px solid #ff3e00;
-    border-radius: 4px;
+    box-shadow: 0 0 0 2px #ff3e00;
     outline: none;
   }
   .jsonErrorMessage {
@@ -276,9 +324,13 @@
           <input type="checkbox" bind:checked={isColoredEnabled} />
           Mostrar colores | Show colors
         </label>
-        <label>
+        <label class="separatorLabel">
           <input type="checkbox" bind:checked={isCompletedEnabled} />
           Mostrar completado | Show completed
+        </label>
+        <label>
+          <input type="checkbox" bind:checked={isRequirementsEnabled} />
+          Mostrar requisitos | Show requirements
         </label>
       </div>
       {#if isCompletedEnabled}
