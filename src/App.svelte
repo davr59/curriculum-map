@@ -319,7 +319,7 @@
           bind:value={textAreaJson} />
         {#if isJsonError}
           <span class="jsonErrorMessage">
-            Error del formato JSON | JSON format error
+            Error de formato JSON | JSON format error
           </span>
         {:else}Datos en formato JSON | Data in JSON format{/if}
       </div>
