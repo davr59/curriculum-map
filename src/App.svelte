@@ -131,8 +131,10 @@
       .attr("stroke", "black")
       .attr("stroke-width", strokeWidth)
       .transition()
-      .attr("stroke", d => (d.done ? "green" : "black"))
-      .attr("stroke-width", d => (d.done ? doneStrokeWidth : strokeWidth))
+      .attr("stroke", d => (d.done && isColoredEnabled ? "green" : "black"))
+      .attr("stroke-width", d =>
+        d.done && isCompletedEnabled ? doneStrokeWidth : strokeWidth
+      )
       .duration(transitionDuration * (index + 1));
   }
 
