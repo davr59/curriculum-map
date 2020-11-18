@@ -12,33 +12,35 @@
   },
   "courses": [
     [
-      { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO" },
-      { "code": "CI0202", "name": "INGLES BASICO" },
-      { "code": "MA0101", "name": "MATEMATICA GENERAL" }
+      { "code": "CI0200", "name": "EXAMEN DIAGNOSTICO", "done": 1 },
+      { "code": "CI0202", "name": "INGLES BASICO", "done": 1 },
+      { "code": "MA0101", "name": "MATEMATICA GENERAL", "done": 1 }
     ],
     [
-      { "code": "CI1106", "name": "COMUNICACION ESCRITA" },
-      { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION" },
-      { "code": "IC1803", "name": "TALLER DE PROGRAMACION" },
+      { "code": "CI1106", "name": "COMUNICACION ESCRITA", "done": 1 },
+      { "code": "IC1802", "name": "INTRODUCCION A LA PROGRAMACION", "done": 1 },
+      { "code": "IC1803", "name": "TALLER DE PROGRAMACION", "done": 1 },
       {
         "code": "IC1400",
-        "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS"
+        "name": "FUNDAMENTOS DE ORGANIZACION DE COMPUTADORAS",
+        "done": 1
       },
-      { "code": "MA1403", "name": "MATEMATICA DISCRETA" },
-      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I" }
+      { "code": "MA1403", "name": "MATEMATICA DISCRETA", "done": 1 },
+      { "code": "SE1100", "name": "ACTIVIDAD CULTURAL I", "done": 1 }
     ],
     [
-      { "code": "CI1230", "name": "INGLES I", "reqs": ["CI0200", "CI0202"] },
+      { "code": "CI1230", "name": "INGLES I", "reqs": ["CI0200", "CI0202"], "done": 1 },
       { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA" },
       {
         "code": "IC2101",
         "name": "PROGRAMACION ORIENTADA A OBJETOS",
-        "reqs": ["IC1802", "IC1803"]
+        "reqs": ["IC1802", "IC1803"],
+        "done": 1
       },
       { "code": "IC3101", "name": "ARQUITECTURA DE COMPUTADORES", "reqs": ["IC1400", "IC1803"] },
-      { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS" },
+      { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS", "done": 1 },
       { "code": "MA1102", "name": "CALCULO DIFERENCIAL E INTEGRAL", "reqs": ["MA0101", "MA1403"] },
-      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I" }
+      { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I", "done": 1 }
     ],
     [
       { "code": "CI1231", "name": "INGLES II", "reqs": ["CI1230"] },
@@ -56,30 +58,56 @@
       { "code": "MA2404", "name": "PROBABILIDADES", "reqs": ["MA1103"] }
     ],
     [
-      { "code": "CS3401", "name": "SEMINARIO DE ESTUDIOS FILOSOFICOS HISTORICOS" },
-      { "code": "IC4810", "name": "ADMINISTRACION DE PROYECTOS" },
-      { "code": "IC5701", "name": "COMPILADORES E INTERPRETES" },
-      { "code": "IC6821", "name": "DISEÑO DE SOFTWARE" },
-      { "code": "MA3405", "name": "ESTADISTICA" }
+      {
+        "code": "CS3401",
+        "name": "SEMINARIO DE ESTUDIOS FILOSOFICOS HISTORICOS",
+        "reqs": ["CS2101"]
+      },
+      { "code": "IC6821", "name": "DISEÑO DE SOFTWARE", "reqs": ["IC5821"] },
+      { "code": "IC4810", "name": "ADMINISTRACION DE PROYECTOS", "reqs": ["IC5821"] },
+      { "code": "IC5701", "name": "COMPILADORES E INTERPRETES", "reqs": ["IC4700"] },
+      { "code": "MA3405", "name": "ESTADISTICA", "reqs": ["MA2404"] }
     ],
     [
-      { "code": "CS4402", "name": "SEMINARIO DE ESTUDIOS COSTARRICENSES" },
+      { "code": "CS4402", "name": "SEMINARIO DE ESTUDIOS COSTARRICENSES", "reqs": ["CS3401"] },
       { "code": "IC4003", "name": "ELECTIVA I" },
-      { "code": "IC6400", "name": "INVESTIGACION DE OPERACIONES" },
-      { "code": "IC6600", "name": "PRINCIPIOS DE SISTEMAS OPERATIVOS" },
       {
         "code": "IC6831",
-        "name": "ASEGURAMIENTO DE LA CALIDAD DEL SOFTWARE"
+        "name": "ASEGURAMIENTO DE LA CALIDAD DEL SOFTWARE",
+        "reqs": ["IC4810", "IC6821"]
       },
-      { "code": "IC7900", "name": "COMPUTACION Y SOCIEDAD" }
+      { "code": "IC7900", "name": "COMPUTACION Y SOCIEDAD", "reqs": ["IC4810"] },
+      { "code": "IC6600", "name": "PRINCIPIOS DE SISTEMAS OPERATIVOS", "reqs": ["IC5701"] },
+      { "code": "IC6400", "name": "INVESTIGACION DE OPERACIONES", "reqs": ["MA3405"] }
     ],
     [
       { "code": "AE4208", "name": "DESARROLLO DE EMPRENDEDORES" },
       { "code": "IC5001", "name": "ELECTIVA II" },
-      { "code": "IC6200", "name": "INTELIGENCIA ARTIFICIAL" },
-      { "code": "IC7602", "name": "REDES" },
-      { "code": "IC7841", "name": "PROYECTO DE INGENIERIA DE SOFTWARE" }
+      {
+        "code": "IC7841",
+        "name": "PROYECTO DE INGENIERIA DE SOFTWARE",
+        "reqs": ["IC4302", "IC6831"]
+      },
+      { "code": "IC7602", "name": "REDES", "reqs": ["IC6600"] },
+      { "code": "IC6200", "name": "INTELIGENCIA ARTIFICIAL", "reqs": ["IC5701", "IC6400"] }
     ],
-    [{ "code": "IC8842", "name": "PRACTICA PROFESIONAL" }]
+    [
+      {
+        "code": "IC8842",
+        "name": "PRACTICA PROFESIONAL",
+        "reqs": [
+          "AE4208",
+          "FH1000",
+          "IC4003",
+          "IC5001",
+          "IC6200",
+          "IC7602",
+          "IC7841",
+          "SE1100",
+          "SE1200",
+          "SE1400"
+        ]
+      }
+    ]
   ]
 }

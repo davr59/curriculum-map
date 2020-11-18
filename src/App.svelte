@@ -31,6 +31,7 @@
   const elementX = elementWidth * 0.3;
   const elementY = elementHeight / 4;
   const strokeWidth = 0.03;
+  const doneStrokeWidth = 0.03 * 10;
   const titleBX = elementWidth / 2;
   const titleBY = elementHeight / 3;
   const nameBX = elementWidth / 2;
@@ -130,7 +131,8 @@
       .attr("stroke", "black")
       .attr("stroke-width", strokeWidth)
       .transition()
-      .attr("fill", d => _buildRectColor(d.code, colorsByCode))
+      .attr("stroke", d => (d.done ? "green" : "black"))
+      .attr("stroke-width", d => (d.done ? doneStrokeWidth : strokeWidth))
       .duration(transitionDuration * (index + 1));
   }
 
