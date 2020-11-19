@@ -11,31 +11,24 @@
   let isRequirementsEnabled;
   let isJsonError;
 
-  const fontFamily = "monospace";
-  const maxColumnsCount = 12;
-  const maxRowsCount = 10;
-  const maxTextLength = 22;
-  const transitionDuration = 3000;
+  const FONT_FAMILY = "monospace";
+  const FONT_SIZE_TITLE = 2.5;
+  const FONT_SIZE_TEXT = 0.6;
+  const CODE_DEFAULT_COLOR = "white";
+  const DONE_DEFAULT_COLOR = "black";
+  const STROKE_WIDTH = 0.03;
+  const STROKE_WIDTH_DONE = 0.3;
+  const MAX_TEXT_LENGTH = 22;
+  const TRANSITION_DURATION = 3000;
+  const MAX_COLUMNS_COUNT = 12;
+  const MAX_ROWS_COUNT = 10;
+  const COURSE_WIDTH = 8.5;
+  const COURSE_HEIGHT = 5;
+  const COURSE_RADIUS = 1;
 
-  const labelFontSize = 0.6;
-  const totalHeight = 71;
+  //falta
   const totalWidth = 99.5;
-  const minWidth = 5;
-  const minHeight = 10;
-  const titleY = minHeight / 6 + 0.25;
-  const nameY = minHeight / 3 - 0.25;
-  const name2Y = minHeight / 3 + 0.5;
-  const elementWidth = 8.5;
-  const elementHeight = 5;
-  const elementRadius = 1;
-  const elementX = elementWidth * 0.3;
-  const elementY = elementHeight / 4;
-  const strokeWidth = 0.03;
-  const doneStrokeWidth = 0.03 * 10;
-  const titleBX = elementWidth / 2;
-  const titleBY = elementHeight / 3;
-  const nameBX = elementWidth / 2;
-  const nameBY = (elementHeight / 3) * 2;
+  const totalHeight = 71;
 
   onMount(async () => {
     textAreaJson = JSON.stringify(data, undefined, "\t");
@@ -54,6 +47,7 @@
     window.print();
   }
 
+  //falta
   function refreshMap() {
     const data = _parseJson(textAreaJson);
     if (!data) {
@@ -61,22 +55,43 @@
     }
     const group = _buildGroup(svg);
     _drawTitle(group, data.title);
-    let oldLines = {};
+    let lastCoursesCoordinates = {};
     const columnsCount =
-      data.courses.length > maxColumnsCount
-        ? maxColumnsCount
+      data.courses.length > MAX_COLUMNS_COUNT
+        ? MAX_COLUMNS_COUNT
         : data.courses.length;
-    for (let index = 0; index < columnsCount; index++) {
-      if (data.courses[index].length > maxRowsCount) {
-        data.courses[index] = data.courses[index].slice(0, maxRowsCount);
+    const x = totalWidth / data.courses.length;
+    for (let columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
+      if (data.courses[columnIndex].length > MAX_ROWS_COUNT) {
+        data.courses[columnIndex] = data.courses[columnIndex].slice(
+          0,
+          MAX_ROWS_COUNT
+        );
       }
-      const y = totalHeight / data.courses[index].length;
-      _drawRect(group, data.courses[index], index, y, data.colorsByCode);
-      _drawText(group, data.courses[index], index, y);
+      const y = totalHeight / data.courses[columnIndex].length;
+      _drawRect(
+        group,
+        data.courses[columnIndex],
+        columnIndex,
+        x,
+        y,
+        data.colors
+      );
+      _drawText(group, data.courses[columnIndex], columnIndex, x, y);
       if (isRequirementsEnabled) {
-        const newLines = _buildLines(data.courses[index], index, y);
-        _drawLine(group, data.courses[index], oldLines, newLines);
-        oldLines = newLines;
+        const coursesCoordinates = _buildCoursesCoordinates(
+          data.courses[columnIndex],
+          columnIndex,
+          x,
+          y
+        );
+        _drawLine(
+          group,
+          data.courses[columnIndex],
+          lastCoursesCoordinates,
+          coursesCoordinates
+        );
+        lastCoursesCoordinates = coursesCoordinates;
       }
     }
   }
@@ -112,58 +127,54 @@
       .attr("y", 1.5)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .attr("font-family", fontFamily)
-      .attr("font-size", 2.5);
+      .attr("font-family", FONT_FAMILY)
+      .attr("font-size", FONT_SIZE_TITLE);
   }
 
-  function _drawRect(group, courses, index, y, colorsByCode) {
+  function _drawRect(group, courses, columnIndex, x, y, colors) {
     return group
       .selectAll()
       .data(courses)
       .enter()
       .append("rect")
-      .attr("width", elementWidth)
-      .attr("height", elementHeight)
-      .attr("x", index * (elementWidth + elementX))
+      .attr("width", COURSE_WIDTH)
+      .attr("height", COURSE_HEIGHT)
+      .attr("x", columnIndex * x + x / 8)
       .attr("y", (d, i) => i * y + y / 2)
-      .attr("rx", elementRadius)
-      .attr("fill", d => _buildRectColor(d.code, colorsByCode))
+      .attr("rx", COURSE_RADIUS)
+      .attr("fill", d => _buildRectColor(d.code, colors))
       .attr("stroke", "black")
-      .attr("stroke-width", strokeWidth)
+      .attr("stroke-width", STROKE_WIDTH)
       .transition()
-      .attr("stroke", d => (d.done && isColoredEnabled ? "green" : "black"))
-      .attr("stroke-width", d =>
-        d.done && isCompletedEnabled ? doneStrokeWidth : strokeWidth
+      .attr("stroke", d =>
+        d.done && isColoredEnabled && colors.done
+          ? colors.done
+          : DONE_DEFAULT_COLOR
       )
-      .duration(transitionDuration * (index + 1));
+      .attr("stroke-width", d =>
+        d.done && isCompletedEnabled ? STROKE_WIDTH_DONE : STROKE_WIDTH
+      )
+      .duration(TRANSITION_DURATION * (columnIndex + 1));
   }
 
-  function _buildRectColor(code, colorsByCode) {
-    let defaultColor = "white";
-    if (!isColoredEnabled || !code || !colorsByCode) {
-      return defaultColor;
+  function _buildRectColor(code, colors) {
+    if (!isColoredEnabled || !code || !colors) {
+      return CODE_DEFAULT_COLOR;
     }
-    if (colorsByCode.default) {
-      defaultColor = colorsByCode.default;
-    }
-    const entry = Object.entries(colorsByCode).find(m => code.startsWith(m[0]));
-    return (entry && entry[1]) || defaultColor;
+    const entry = Object.entries(colors).find(m => code.startsWith(m[0]));
+    return (entry && entry[1]) || colors.codeDefault || CODE_DEFAULT_COLOR;
   }
 
-  function _drawText(group, courses, index, y) {
+  function _drawText(group, courses, columnIndex, x, y) {
     group
       .selectAll()
       .data(courses)
       .enter()
       .append("text")
-      .attr("x", index * (elementWidth + elementX) + titleBX)
-      .attr("y", (d, i) =>
-        d.name.length <= maxTextLength
-          ? i * y + y / 2 + titleY
-          : i * y + y / 2 + titleY - 0.5
-      )
-      .attr("font-family", fontFamily)
-      .attr("font-size", (d, i) => labelFontSize)
+      .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
+      .attr("y", (d, i) => _buildTitleY(d.name, i, y))
+      .attr("font-family", FONT_FAMILY)
+      .attr("font-size", (d, i) => FONT_SIZE_TEXT)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .text((d, i) => d.code);
@@ -172,69 +183,83 @@
       .data(courses)
       .enter()
       .append("text")
-      .attr("x", index * (elementWidth + elementX) + nameBX)
-      .attr("y", (d, i) => i * y + y / 2 + nameY)
-      .attr("font-family", fontFamily)
-      .attr("font-size", (d, i) => labelFontSize)
+      .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
+      .attr(
+        "y",
+        (d, i) => i * y + y / 2 + (COURSE_HEIGHT / 4) * 3 - FONT_SIZE_TEXT
+      )
+      .attr("font-family", FONT_FAMILY)
+      .attr("font-size", (d, i) => FONT_SIZE_TEXT)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .text((d, i) => _buildText1(d.name, maxTextLength));
+      .text((d, i) => _buildText1(d.name));
     group
       .selectAll()
       .data(courses)
       .enter()
       .append("text")
-      .attr("x", index * (elementWidth + elementX) + nameBX)
-      .attr("y", (d, i) => i * y + y / 2 + name2Y)
-      .attr("font-family", fontFamily)
-      .attr("font-size", (d, i) => labelFontSize)
+      .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
+      .attr("y", (d, i) => i * y + y / 2 + (COURSE_HEIGHT / 4) * 3)
+      .attr("font-family", FONT_FAMILY)
+      .attr("font-size", (d, i) => FONT_SIZE_TEXT)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .text((d, i) => _buildText2(d.name, maxTextLength));
+      .text((d, i) => _buildText2(d.name));
   }
 
-  function _buildText1(text, maxTextLength) {
-    if (text.length <= maxTextLength) {
+  function _buildTitleY(name, i, y) {
+    return name.length <= MAX_TEXT_LENGTH
+      ? i * y + y / 2 + COURSE_HEIGHT / 2 - FONT_SIZE_TEXT
+      : i * y + y / 2 + COURSE_HEIGHT / 4 + FONT_SIZE_TEXT / 2;
+  }
+
+  function _buildText1(text) {
+    if (text.length <= MAX_TEXT_LENGTH) {
       return text;
     } else {
-      let subtext = text.substr(0, maxTextLength);
+      let subtext = text.substr(0, MAX_TEXT_LENGTH);
       const blankIndex = subtext.lastIndexOf(" ");
       subtext = subtext.substr(0, blankIndex + 1).trim();
       return subtext;
     }
   }
 
-  function _buildText2(text, maxTextLength) {
-    if (text.length <= maxTextLength) {
+  function _buildText2(text) {
+    if (text.length <= MAX_TEXT_LENGTH) {
       return "";
     } else {
-      let subtext = text.substr(0, maxTextLength);
+      let subtext = text.substr(0, MAX_TEXT_LENGTH);
       const blankIndex = subtext.lastIndexOf(" ");
       subtext = text.substr(blankIndex, text.length).trim();
-      return subtext.length <= maxTextLength
+      return subtext.length <= MAX_TEXT_LENGTH
         ? subtext
-        : `${subtext.substr(0, maxTextLength - 3)}...`;
+        : `${subtext.substr(0, MAX_TEXT_LENGTH - 3)}...`;
     }
   }
 
-  function _buildLines(courses, index, y) {
-    const lines = {};
+  function _buildCoursesCoordinates(courses, columnIndex, x, y) {
+    const coursesCoordinates = {};
     for (let i = 0; i < courses.length; i++) {
-      lines[courses[i].code.trim()] = {
-        x1: index * (elementWidth + elementX),
-        x2: index * (elementWidth + elementX) + elementWidth,
-        y: i * y + y / 2 + elementHeight / 2
+      coursesCoordinates[courses[i].code.trim()] = {
+        x1: columnIndex * x + x / 8,
+        x2: columnIndex * x + x / 8 + COURSE_WIDTH,
+        y: i * y + y / 2 + COURSE_HEIGHT / 2
       };
     }
-    return lines;
+    return coursesCoordinates;
   }
 
-  function _drawLine(group, courses, oldLines, newLines) {
+  function _drawLine(
+    group,
+    courses,
+    lastCoursesCoordinates,
+    coursesCoordinates
+  ) {
     if (
-      !oldLines ||
-      !newLines ||
-      Object.keys(oldLines) === 0 ||
-      Object.keys(newLines) === 0
+      !lastCoursesCoordinates ||
+      !coursesCoordinates ||
+      Object.keys(lastCoursesCoordinates) === 0 ||
+      Object.keys(coursesCoordinates) === 0
     ) {
       return;
     }
@@ -243,15 +268,15 @@
       .forEach(m => {
         group
           .selectAll()
-          .data(m.reqs.filter(n => oldLines[n]))
+          .data(m.reqs.filter(n => lastCoursesCoordinates[n]))
           .enter()
           .append("line")
-          .attr("x1", (d, i) => oldLines[d.trim()].x2)
-          .attr("y1", (d, i) => oldLines[d.trim()].y)
-          .attr("x2", (d, i) => newLines[m.code.trim()].x1)
-          .attr("y2", (d, i) => newLines[m.code.trim()].y)
+          .attr("x1", (d, i) => lastCoursesCoordinates[d.trim()].x2)
+          .attr("y1", (d, i) => lastCoursesCoordinates[d.trim()].y)
+          .attr("x2", (d, i) => coursesCoordinates[m.code.trim()].x1)
+          .attr("y2", (d, i) => coursesCoordinates[m.code.trim()].y)
           .attr("stroke", "black")
-          .attr("stroke-width", strokeWidth);
+          .attr("stroke-width", STROKE_WIDTH);
       });
   }
 </script>

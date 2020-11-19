@@ -1,14 +1,15 @@
 {
   "title": "BACHILLERATO EN INGENIERÍA EN COMPUTACIÓN",
-  "colorsByCode": {
-    "default": "lightgreen",
+  "colors": {
+    "codeDefault": "lightgreen",
     "CI": "lightskyblue",
     "MA": "lightcoral",
     "IC": "lightgreen",
     "SE": "tan",
     "FH": "orchid",
     "CS": "gold",
-    "AE": "lightsalmon"
+    "AE": "lightsalmon",
+    "done": "green"
   },
   "courses": [
     [
@@ -30,24 +31,39 @@
     ],
     [
       { "code": "CI1230", "name": "INGLES I", "reqs": ["CI0200", "CI0202"], "done": 1 },
-      { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA" },
+      { "code": "FH1000", "name": "CENTROS DE FORMACION HUMANISTICA", "done": 1 },
       {
         "code": "IC2101",
         "name": "PROGRAMACION ORIENTADA A OBJETOS",
         "reqs": ["IC1802", "IC1803"],
         "done": 1
       },
-      { "code": "IC3101", "name": "ARQUITECTURA DE COMPUTADORES", "reqs": ["IC1400", "IC1803"] },
+      {
+        "code": "IC3101",
+        "name": "ARQUITECTURA DE COMPUTADORES",
+        "reqs": ["IC1400", "IC1803"],
+        "done": 1
+      },
       { "code": "IC2001", "name": "ESTRUCTURAS DE DATOS", "done": 1 },
-      { "code": "MA1102", "name": "CALCULO DIFERENCIAL E INTEGRAL", "reqs": ["MA0101", "MA1403"] },
+      {
+        "code": "MA1102",
+        "name": "CALCULO DIFERENCIAL E INTEGRAL",
+        "reqs": ["MA0101", "MA1403"],
+        "done": 1
+      },
       { "code": "SE1200", "name": "ACTIVIDAD DEPORTIVA I", "done": 1 }
     ],
     [
-      { "code": "CI1231", "name": "INGLES II", "reqs": ["CI1230"] },
+      { "code": "CI1231", "name": "INGLES II", "reqs": ["CI1230"], "done": 1 },
       { "code": "CI1107", "name": "COMUNICACION ORAL", "reqs": ["CI1106"] },
-      { "code": "IC4301", "name": "BASES DE DATOS I", "reqs": ["IC2001"] },
-      { "code": "IC3002", "name": "ANALISIS DE ALGORITMOS", "reqs": ["IC2001", "MA1102"] },
-      { "code": "MA1103", "name": "CALCULO Y ALGEBRA LINEAL", "reqs": ["MA1102"] },
+      { "code": "IC4301", "name": "BASES DE DATOS I", "reqs": ["IC2001"], "done": 1 },
+      {
+        "code": "IC3002",
+        "name": "ANALISIS DE ALGORITMOS",
+        "reqs": ["IC2001", "MA1102"],
+        "done": 1
+      },
+      { "code": "MA1103", "name": "CALCULO Y ALGEBRA LINEAL", "reqs": ["MA1102"], "done": 1 },
       { "code": "SE1400", "name": "ACTIVIDAD CULTURAL-DEPORTIVA" }
     ],
     [
