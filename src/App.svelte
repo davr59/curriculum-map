@@ -16,8 +16,8 @@
   const FONT_SIZE_TEXT = 0.6;
   const CODE_DEFAULT_COLOR = "white";
   const DONE_DEFAULT_COLOR = "black";
-  const STROKE_WIDTH = 0.03;
-  const STROKE_WIDTH_DONE = 0.3;
+  const STROKE_WIDTH = 0.05;
+  const STROKE_WIDTH_DONE = 0.5;
   const MAX_TEXT_LENGTH = 22;
   const TRANSITION_DURATION = 3000;
   const MAX_COLUMNS_COUNT = 12;
@@ -89,7 +89,8 @@
           group,
           data.courses[columnIndex],
           lastCoursesCoordinates,
-          coursesCoordinates
+          coursesCoordinates,
+          columnIndex
         );
         lastCoursesCoordinates = coursesCoordinates;
       }
@@ -147,12 +148,12 @@
       .attr("stroke-width", STROKE_WIDTH)
       .transition()
       .attr("stroke", d =>
-        d.done && isColoredEnabled && colors.done
+        isColoredEnabled && d.done && colors.done
           ? colors.done
           : DONE_DEFAULT_COLOR
       )
       .attr("stroke-width", d =>
-        d.done && isCompletedEnabled ? STROKE_WIDTH_DONE : STROKE_WIDTH
+        isCompletedEnabled && d.done ? STROKE_WIDTH_DONE : STROKE_WIDTH
       )
       .duration(TRANSITION_DURATION * (columnIndex + 1));
   }
@@ -243,7 +244,8 @@
       coursesCoordinates[courses[i].code.trim()] = {
         x1: columnIndex * x + x / 8,
         x2: columnIndex * x + x / 8 + COURSE_WIDTH,
-        y: i * y + y / 2 + COURSE_HEIGHT / 2
+        y: i * y + y / 2 + COURSE_HEIGHT / 2,
+        done: courses[i].done
       };
     }
     return coursesCoordinates;
@@ -253,7 +255,8 @@
     group,
     courses,
     lastCoursesCoordinates,
-    coursesCoordinates
+    coursesCoordinates,
+    columnIndex
   ) {
     if (
       !lastCoursesCoordinates ||
@@ -276,7 +279,21 @@
           .attr("x2", (d, i) => coursesCoordinates[m.code.trim()].x1)
           .attr("y2", (d, i) => coursesCoordinates[m.code.trim()].y)
           .attr("stroke", "black")
-          .attr("stroke-width", STROKE_WIDTH);
+          .attr("stroke-width", STROKE_WIDTH)
+          .transition()
+          .attr("x1", (d, i) =>
+            isCompletedEnabled
+              ? lastCoursesCoordinates[d.trim()].x2 +
+                (lastCoursesCoordinates[d.trim()].done ? 0.25 : 0)
+              : lastCoursesCoordinates[d.trim()].x2
+          )
+          .attr("x2", (d, i) =>
+            isCompletedEnabled
+              ? coursesCoordinates[m.code.trim()].x1 -
+                (coursesCoordinates[m.code.trim()].done ? 0.25 : 0)
+              : coursesCoordinates[m.code.trim()].x1
+          )
+          .duration(TRANSITION_DURATION * (columnIndex + 1));
       });
   }
 </script>
