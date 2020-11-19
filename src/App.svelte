@@ -13,12 +13,12 @@
 
   const FONT_FAMILY = "monospace";
   const FONT_SIZE_TITLE = 2.5;
-  const FONT_SIZE_TEXT = 0.6;
+  const FONT_SIZE_TEXT = 0.65;
   const CODE_DEFAULT_COLOR = "white";
   const DONE_DEFAULT_COLOR = "black";
-  const STROKE_WIDTH = 0.05;
-  const STROKE_WIDTH_DONE = 0.5;
-  const MAX_TEXT_LENGTH = 22;
+  const STROKE_WIDTH = 0.06;
+  const STROKE_WIDTH_DONE = 0.4;
+  const MAX_TEXT_LENGTH = 20;
   const TRANSITION_DURATION = 3000;
   const MAX_COLUMNS_COUNT = 12;
   const MAX_ROWS_COUNT = 10;
@@ -173,7 +173,11 @@
       .enter()
       .append("text")
       .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
-      .attr("y", (d, i) => _buildTitleY(d.name, i, y))
+      .attr("y", (d, i) =>
+        d.name.length <= MAX_TEXT_LENGTH
+          ? i * y + y / 2 + COURSE_HEIGHT / 2 - FONT_SIZE_TEXT
+          : i * y + y / 2 + COURSE_HEIGHT / 4 + FONT_SIZE_TEXT / 2
+      )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
       .attr("text-anchor", "middle")
@@ -185,9 +189,10 @@
       .enter()
       .append("text")
       .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
-      .attr(
-        "y",
-        (d, i) => i * y + y / 2 + (COURSE_HEIGHT / 4) * 3 - FONT_SIZE_TEXT
+      .attr("y", (d, i) =>
+        d.name.length <= MAX_TEXT_LENGTH
+          ? i * y + y / 2 + (COURSE_HEIGHT / 4) * 3 - FONT_SIZE_TEXT / 2
+          : i * y + y / 2 + (COURSE_HEIGHT / 4) * 3 - FONT_SIZE_TEXT
       )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
@@ -284,13 +289,17 @@
           .attr("x1", (d, i) =>
             isCompletedEnabled
               ? lastCoursesCoordinates[d.trim()].x2 +
-                (lastCoursesCoordinates[d.trim()].done ? 0.25 : 0)
+                (lastCoursesCoordinates[d.trim()].done
+                  ? STROKE_WIDTH_DONE / 2
+                  : 0)
               : lastCoursesCoordinates[d.trim()].x2
           )
           .attr("x2", (d, i) =>
             isCompletedEnabled
               ? coursesCoordinates[m.code.trim()].x1 -
-                (coursesCoordinates[m.code.trim()].done ? 0.25 : 0)
+                (coursesCoordinates[m.code.trim()].done
+                  ? STROKE_WIDTH_DONE / 2
+                  : 0)
               : coursesCoordinates[m.code.trim()].x1
           )
           .duration(TRANSITION_DURATION * (columnIndex + 1));
