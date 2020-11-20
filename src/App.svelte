@@ -25,10 +25,8 @@
   const COURSE_WIDTH = 8.5;
   const COURSE_HEIGHT = 5;
   const COURSE_RADIUS = 1;
-
-  //falta
-  const totalWidth = 99.5;
-  const totalHeight = 71;
+  const TOTAL_WIDTH = 99.5;
+  const TOTAL_HEIGHT = 71;
 
   onMount(async () => {
     textAreaJson = JSON.stringify(data, undefined, "\t");
@@ -47,53 +45,38 @@
     window.print();
   }
 
-  //falta
   function refreshMap() {
     const data = _parseJson(textAreaJson);
     if (!data) {
       return;
     }
     const group = _buildGroup(svg);
-    _drawTitle(group, data.title);
-    let lastCoursesCoordinates = {};
     const columnsCount =
       data.courses.length > MAX_COLUMNS_COUNT
         ? MAX_COLUMNS_COUNT
         : data.courses.length;
-    const x = totalWidth / data.courses.length;
+    const x = TOTAL_WIDTH / data.courses.length;
+    let lastCoursesCoordinates = {};
+
+    _drawTitle(group, data.title);
     for (let columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
-      if (data.courses[columnIndex].length > MAX_ROWS_COUNT) {
-        data.courses[columnIndex] = data.courses[columnIndex].slice(
-          0,
-          MAX_ROWS_COUNT
-        );
-      }
-      const y = totalHeight / data.courses[columnIndex].length;
-      _drawRect(
+      const courses =
+        data.courses[columnIndex].length > MAX_ROWS_COUNT
+          ? (data.courses[columnIndex] = data.courses[columnIndex].slice(
+              0,
+              MAX_ROWS_COUNT
+            ))
+          : data.courses[columnIndex];
+      const y = TOTAL_HEIGHT / courses.length;
+      lastCoursesCoordinates = _drawCourses(
         group,
-        data.courses[columnIndex],
+        courses,
         columnIndex,
         x,
         y,
-        data.colors
+        data.colors,
+        lastCoursesCoordinates
       );
-      _drawText(group, data.courses[columnIndex], columnIndex, x, y);
-      if (isRequirementsEnabled) {
-        const coursesCoordinates = _buildCoursesCoordinates(
-          data.courses[columnIndex],
-          columnIndex,
-          x,
-          y
-        );
-        _drawLine(
-          group,
-          data.courses[columnIndex],
-          lastCoursesCoordinates,
-          coursesCoordinates,
-          columnIndex
-        );
-        lastCoursesCoordinates = coursesCoordinates;
-      }
     }
   }
 
@@ -130,6 +113,36 @@
       .attr("dominant-baseline", "middle")
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", FONT_SIZE_TITLE);
+  }
+
+  function _drawCourses(
+    group,
+    courses,
+    columnIndex,
+    x,
+    y,
+    colors,
+    lastCoursesCoordinates
+  ) {
+    _drawRect(group, courses, columnIndex, x, y, colors);
+    _drawText(group, courses, columnIndex, x, y);
+    if (!isRequirementsEnabled) {
+      return;
+    }
+    const coursesCoordinates = _buildCoursesCoordinates(
+      courses,
+      columnIndex,
+      x,
+      y
+    );
+    _drawLine(
+      group,
+      courses,
+      lastCoursesCoordinates,
+      coursesCoordinates,
+      columnIndex
+    );
+    return coursesCoordinates;
   }
 
   function _drawRect(group, courses, columnIndex, x, y, colors) {
@@ -211,12 +224,6 @@
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .text((d, i) => _buildText2(d.name));
-  }
-
-  function _buildTitleY(name, i, y) {
-    return name.length <= MAX_TEXT_LENGTH
-      ? i * y + y / 2 + COURSE_HEIGHT / 2 - FONT_SIZE_TEXT
-      : i * y + y / 2 + COURSE_HEIGHT / 4 + FONT_SIZE_TEXT / 2;
   }
 
   function _buildText1(text) {
