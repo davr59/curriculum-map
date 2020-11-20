@@ -56,9 +56,13 @@
         ? MAX_COLUMNS_COUNT
         : data.courses.length;
     const x = TOTAL_WIDTH / data.courses.length;
-    let lastCoursesCoordinates = {};
 
-    _drawTitle(group, data.title);
+    _drawTitle(group, data);
+    _drawColumns(group, data, columnsCount, x);
+  }
+
+  function _drawColumns(group, data, columnsCount, x) {
+    let lastColumnCoordinates = {};
     for (let columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
       const courses =
         data.courses[columnIndex].length > MAX_ROWS_COUNT
@@ -68,14 +72,14 @@
             ))
           : data.courses[columnIndex];
       const y = TOTAL_HEIGHT / courses.length;
-      lastCoursesCoordinates = _drawCourses(
+      lastColumnCoordinates = _drawColumn(
         group,
         courses,
         columnIndex,
         x,
         y,
         data.colors,
-        lastCoursesCoordinates
+        lastColumnCoordinates
       );
     }
   }
@@ -103,10 +107,10 @@
     return svg.append("g");
   }
 
-  function _drawTitle(group, title) {
+  function _drawTitle(group, data) {
     group
       .append("text")
-      .text(title || "")
+      .text(data.title || "")
       .attr("x", "50%")
       .attr("y", 1.5)
       .attr("text-anchor", "middle")
@@ -115,21 +119,21 @@
       .attr("font-size", FONT_SIZE_TITLE);
   }
 
-  function _drawCourses(
+  function _drawColumn(
     group,
     courses,
     columnIndex,
     x,
     y,
     colors,
-    lastCoursesCoordinates
+    lastColumnCoordinates
   ) {
     _drawRect(group, courses, columnIndex, x, y, colors);
     _drawText(group, courses, columnIndex, x, y);
     if (!isRequirementsEnabled) {
       return;
     }
-    const coursesCoordinates = _buildCoursesCoordinates(
+    const columnCoordinates = _buildColumnCoordinates(
       courses,
       columnIndex,
       x,
@@ -138,11 +142,11 @@
     _drawLine(
       group,
       courses,
-      lastCoursesCoordinates,
-      coursesCoordinates,
+      lastColumnCoordinates,
+      columnCoordinates,
       columnIndex
     );
-    return coursesCoordinates;
+    return columnCoordinates;
   }
 
   function _drawRect(group, courses, columnIndex, x, y, colors) {
@@ -229,52 +233,49 @@
   function _buildText1(text) {
     if (text.length <= MAX_TEXT_LENGTH) {
       return text;
-    } else {
-      let subtext = text.substr(0, MAX_TEXT_LENGTH);
-      const blankIndex = subtext.lastIndexOf(" ");
-      subtext = subtext.substr(0, blankIndex + 1).trim();
-      return subtext;
     }
+    const subtext = text.substr(0, MAX_TEXT_LENGTH);
+    const blankIndex = subtext.lastIndexOf(" ");
+    return subtext.substr(0, blankIndex + 1).trim();
   }
 
   function _buildText2(text) {
     if (text.length <= MAX_TEXT_LENGTH) {
       return "";
-    } else {
-      let subtext = text.substr(0, MAX_TEXT_LENGTH);
-      const blankIndex = subtext.lastIndexOf(" ");
-      subtext = text.substr(blankIndex, text.length).trim();
-      return subtext.length <= MAX_TEXT_LENGTH
-        ? subtext
-        : `${subtext.substr(0, MAX_TEXT_LENGTH - 3)}...`;
     }
+    let subtext = text.substr(0, MAX_TEXT_LENGTH);
+    const blankIndex = subtext.lastIndexOf(" ");
+    subtext = text.substr(blankIndex, text.length).trim();
+    return subtext.length <= MAX_TEXT_LENGTH
+      ? subtext
+      : `${subtext.substr(0, MAX_TEXT_LENGTH - 3)}...`;
   }
 
-  function _buildCoursesCoordinates(courses, columnIndex, x, y) {
-    const coursesCoordinates = {};
+  function _buildColumnCoordinates(courses, columnIndex, x, y) {
+    const columnCoordinates = {};
     for (let i = 0; i < courses.length; i++) {
-      coursesCoordinates[courses[i].code.trim()] = {
+      columnCoordinates[courses[i].code.trim()] = {
         x1: columnIndex * x + x / 8,
         x2: columnIndex * x + x / 8 + COURSE_WIDTH,
         y: i * y + y / 2 + COURSE_HEIGHT / 2,
         done: courses[i].done
       };
     }
-    return coursesCoordinates;
+    return columnCoordinates;
   }
 
   function _drawLine(
     group,
     courses,
-    lastCoursesCoordinates,
-    coursesCoordinates,
+    lastColumnCoordinates,
+    columnCoordinates,
     columnIndex
   ) {
     if (
-      !lastCoursesCoordinates ||
-      !coursesCoordinates ||
-      Object.keys(lastCoursesCoordinates) === 0 ||
-      Object.keys(coursesCoordinates) === 0
+      !lastColumnCoordinates ||
+      !columnCoordinates ||
+      Object.keys(lastColumnCoordinates) === 0 ||
+      Object.keys(columnCoordinates) === 0
     ) {
       return;
     }
@@ -283,31 +284,31 @@
       .forEach(m => {
         group
           .selectAll()
-          .data(m.reqs.filter(n => lastCoursesCoordinates[n]))
+          .data(m.reqs.filter(n => lastColumnCoordinates[n]))
           .enter()
           .append("line")
-          .attr("x1", (d, i) => lastCoursesCoordinates[d.trim()].x2)
-          .attr("y1", (d, i) => lastCoursesCoordinates[d.trim()].y)
-          .attr("x2", (d, i) => coursesCoordinates[m.code.trim()].x1)
-          .attr("y2", (d, i) => coursesCoordinates[m.code.trim()].y)
+          .attr("x1", (d, i) => lastColumnCoordinates[d.trim()].x2)
+          .attr("y1", (d, i) => lastColumnCoordinates[d.trim()].y)
+          .attr("x2", (d, i) => columnCoordinates[m.code.trim()].x1)
+          .attr("y2", (d, i) => columnCoordinates[m.code.trim()].y)
           .attr("stroke", "black")
           .attr("stroke-width", STROKE_WIDTH)
           .transition()
           .attr("x1", (d, i) =>
             isCompletedEnabled
-              ? lastCoursesCoordinates[d.trim()].x2 +
-                (lastCoursesCoordinates[d.trim()].done
+              ? lastColumnCoordinates[d.trim()].x2 +
+                (lastColumnCoordinates[d.trim()].done
                   ? STROKE_WIDTH_DONE / 2
                   : 0)
-              : lastCoursesCoordinates[d.trim()].x2
+              : lastColumnCoordinates[d.trim()].x2
           )
           .attr("x2", (d, i) =>
             isCompletedEnabled
-              ? coursesCoordinates[m.code.trim()].x1 -
-                (coursesCoordinates[m.code.trim()].done
+              ? columnCoordinates[m.code.trim()].x1 -
+                (columnCoordinates[m.code.trim()].done
                   ? STROKE_WIDTH_DONE / 2
                   : 0)
-              : coursesCoordinates[m.code.trim()].x1
+              : columnCoordinates[m.code.trim()].x1
           )
           .duration(TRANSITION_DURATION * (columnIndex + 1));
       });
