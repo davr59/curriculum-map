@@ -63,33 +63,6 @@
     _drawColumns(group, data, columnsCount);
   }
 
-  function _drawColumns(group, data, columnsCount) {
-    let lastColumnCoordinates = {};
-    for (let columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
-      const courses =
-        data.courses[columnIndex].length > MAX_ROWS_COUNT
-          ? (data.courses[columnIndex] = data.courses[columnIndex].slice(
-              0,
-              MAX_ROWS_COUNT
-            ))
-          : data.courses[columnIndex];
-      _blockHeight = TOTAL_HEIGHT / courses.length;
-      lastColumnCoordinates = _drawColumn(
-        group,
-        courses,
-        columnIndex,
-        data.colors,
-        lastColumnCoordinates
-      );
-    }
-  }
-
-  function _buildSvg() {
-    const mapNode = d3.select(map);
-    mapNode.style("width", "100vw").style("height", "100vh");
-    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
-  }
-
   function _parseJson(json) {
     try {
       const data = JSON.parse(json);
@@ -100,23 +73,6 @@
       isJsonError = true;
       return undefined;
     }
-  }
-
-  function _buildGroup(svg) {
-    svg.html("");
-    return svg.append("g");
-  }
-
-  function _drawTitle(group, data) {
-    group
-      .append("text")
-      .text(data.title || "")
-      .attr("x", "50%")
-      .attr("y", 1.5)
-      .attr("text-anchor", "middle")
-      .attr("dominant-baseline", "middle")
-      .attr("font-family", FONT_FAMILY)
-      .attr("font-size", FONT_SIZE_TITLE);
   }
 
   function _setBlockWidth(value) {
@@ -137,7 +93,37 @@
   }
 
   function _getLineHeight() {
-    return _blockHeight / 2;
+    return _blockHeight * 0.5;
+  }
+
+  function _drawTitle(group, data) {
+    group
+      .append("text")
+      .text(data.title || "")
+      .attr("x", "50%")
+      .attr("y", 1.5)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .attr("font-family", FONT_FAMILY)
+      .attr("font-size", FONT_SIZE_TITLE);
+  }
+
+  function _drawColumns(group, data, columnsCount) {
+    let lastColumnCoordinates = {};
+    for (let columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
+      const courses =
+        data.courses[columnIndex].length > MAX_ROWS_COUNT
+          ? data.courses[columnIndex].slice(0, MAX_ROWS_COUNT)
+          : data.courses[columnIndex];
+      _blockHeight = TOTAL_HEIGHT / courses.length;
+      lastColumnCoordinates = _drawColumn(
+        group,
+        courses,
+        columnIndex,
+        data.colors,
+        lastColumnCoordinates
+      );
+    }
   }
 
   function _drawColumn(
@@ -189,14 +175,6 @@
       .duration(TRANSITION_DURATION * (columnIndex + 1));
   }
 
-  function _buildRectColor(code, colors) {
-    if (!isColoredEnabled || !code || !colors) {
-      return CODE_DEFAULT_COLOR;
-    }
-    const entry = Object.entries(colors).find(m => code.startsWith(m[0]));
-    return (entry && entry[1]) || colors.codeDefault || CODE_DEFAULT_COLOR;
-  }
-
   function _drawText(group, courses, columnIndex) {
     group
       .selectAll()
@@ -230,7 +208,7 @@
       .append("text")
       .attr(
         "x",
-        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() / 2
+        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() * 0.5
       )
       .attr("y", (d, i) =>
         d.name.length <= _maxTextLength
@@ -267,40 +245,6 @@
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .text((d, i) => _buildText2(d.name));
-  }
-
-  function _buildText1(text) {
-    if (text.length <= _maxTextLength) {
-      return text;
-    }
-    const subtext = text.substr(0, _maxTextLength);
-    const blankIndex = subtext.lastIndexOf(" ");
-    return subtext.substr(0, blankIndex + 1).trim();
-  }
-
-  function _buildText2(text) {
-    if (text.length <= _maxTextLength) {
-      return "";
-    }
-    let subtext = text.substr(0, _maxTextLength);
-    const blankIndex = subtext.lastIndexOf(" ");
-    subtext = text.substr(blankIndex, text.length).trim();
-    return subtext.length <= _maxTextLength
-      ? subtext
-      : `${subtext.substr(0, _maxTextLength - 3)}...`;
-  }
-
-  function _buildColumnCoordinates(courses, columnIndex) {
-    const columnCoordinates = {};
-    for (let i = 0; i < courses.length; i++) {
-      columnCoordinates[courses[i].code.trim()] = {
-        x1: columnIndex * _blockWidth + _getLineWidth(),
-        x2: columnIndex * _blockWidth + _blockWidth,
-        y: i * _blockHeight + _getLineHeight() + _getRectangleHeight() * 0.5,
-        done: courses[i].done
-      };
-    }
-    return columnCoordinates;
   }
 
   function _drawLine(
@@ -352,6 +296,59 @@
           .duration(TRANSITION_DURATION * (columnIndex + 1));
       });
   }
+
+  function _buildSvg() {
+    const mapNode = d3.select(map);
+    mapNode.style("width", "100vw").style("height", "100vh");
+    return mapNode.append("svg").attr("viewBox", "0 0 100 75");
+  }
+
+  function _buildGroup(svg) {
+    svg.html("");
+    return svg.append("g");
+  }
+
+  function _buildRectColor(code, colors) {
+    if (!isColoredEnabled || !code || !colors) {
+      return CODE_DEFAULT_COLOR;
+    }
+    const entry = Object.entries(colors).find(m => code.startsWith(m[0]));
+    return (entry && entry[1]) || colors.codeDefault || CODE_DEFAULT_COLOR;
+  }
+
+  function _buildText1(text) {
+    if (text.length <= _maxTextLength) {
+      return text;
+    }
+    const subtext = text.substr(0, _maxTextLength);
+    const blankIndex = subtext.lastIndexOf(" ");
+    return subtext.substr(0, blankIndex + 1).trim();
+  }
+
+  function _buildText2(text) {
+    if (text.length <= _maxTextLength) {
+      return "";
+    }
+    let subtext = text.substr(0, _maxTextLength);
+    const blankIndex = subtext.lastIndexOf(" ");
+    subtext = text.substr(blankIndex, text.length).trim();
+    return subtext.length <= _maxTextLength
+      ? subtext
+      : `${subtext.substr(0, _maxTextLength - 3)}...`;
+  }
+
+  function _buildColumnCoordinates(courses, columnIndex) {
+    const columnCoordinates = {};
+    for (let i = 0; i < courses.length; i++) {
+      columnCoordinates[courses[i].code.trim()] = {
+        x1: columnIndex * _blockWidth + _getLineWidth(),
+        x2: columnIndex * _blockWidth + _blockWidth,
+        y: i * _blockHeight + _getLineHeight() + _getRectangleHeight() * 0.5,
+        done: courses[i].done
+      };
+    }
+    return columnCoordinates;
+  }
 </script>
 
 <style>
@@ -392,8 +389,6 @@
   }
   .separatorButton {
     margin-right: 1px;
-  }
-  .divMap {
   }
   @media print {
     .noprint {
@@ -443,7 +438,7 @@
       <button type="button" on:click={print}>Imprimir | Print</button>
     </form>
   </div>
-  <div class={'divMap'}>
+  <div>
     <div bind:this={map} />
   </div>
 </main>
