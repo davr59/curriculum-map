@@ -12,6 +12,7 @@
   let isJsonError;
 
   let _blockWidth;
+  let _realBlockWidth;
   let _blockHeight;
   let _maxTextLength;
 
@@ -76,6 +77,7 @@
   }
 
   function _setBlockWidth(value) {
+    _realBlockWidth = value;
     _blockWidth = value > MAX_BLOCK_WIDTH ? MAX_BLOCK_WIDTH : value;
     _maxTextLength = Math.floor(_blockWidth * 2) - 1;
   }
@@ -157,7 +159,11 @@
       .append("rect")
       .attr("width", _getRectangleWidth())
       .attr("height", _getRectangleHeight())
-      .attr("x", columnIndex * _blockWidth + _getLineWidth())
+      .attr(
+        "x",
+        columnIndex * _getRectangleWidth() +
+          (columnIndex + 1) * _realBlockWidth * 0.175
+      )
       .attr("y", (d, i) => i * _blockHeight + _getLineHeight())
       .attr("rx", COURSE_RADIUS)
       .attr("fill", d => _buildRectColor(d.code, colors))
