@@ -23,10 +23,10 @@
   const FONT_FAMILY = "monospace";
   const FONT_SIZE_TITLE = 2.5;
   const FONT_SIZE_TEXT = 0.65;
+  const STROKE_WIDTH = FONT_SIZE_TEXT * 0.1;
+  const STROKE_WIDTH_DONE = FONT_SIZE_TEXT * 0.75;
   const CODE_DEFAULT_COLOR = "white";
   const DONE_DEFAULT_COLOR = "black";
-  const STROKE_WIDTH = 0.06;
-  const STROKE_WIDTH_DONE = 0.4;
   const TRANSITION_DURATION = 3000;
   const COURSE_RADIUS = 1;
 
@@ -205,18 +205,18 @@
       .append("text")
       .attr(
         "x",
-        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() / 2
+        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() * 0.5
       )
       .attr("y", (d, i) =>
         d.name.length <= _maxTextLength
           ? i * _blockHeight +
             _getLineHeight() +
-            _getRectangleHeight() / 2 -
+            _getRectangleHeight() * 0.5 -
             FONT_SIZE_TEXT
           : i * _blockHeight +
             _getLineHeight() +
-            _getRectangleHeight() / 4 +
-            FONT_SIZE_TEXT / 2
+            _getRectangleHeight() * 0.25 +
+            FONT_SIZE_TEXT * 0.5
       )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
@@ -236,11 +236,11 @@
         d.name.length <= _maxTextLength
           ? i * _blockHeight +
             _getLineHeight() +
-            (_getRectangleHeight() / 4) * 3 -
-            FONT_SIZE_TEXT / 2
+            _getRectangleHeight() * 0.75 -
+            FONT_SIZE_TEXT * 0.5
           : i * _blockHeight +
             _getLineHeight() +
-            (_getRectangleHeight() / 4) * 3 -
+            _getRectangleHeight() * 0.75 -
             FONT_SIZE_TEXT
       )
       .attr("font-family", FONT_FAMILY)
@@ -255,12 +255,12 @@
       .append("text")
       .attr(
         "x",
-        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() / 2
+        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() * 0.5
       )
       .attr(
         "y",
         (d, i) =>
-          i * _blockHeight + _getLineHeight() + (_getRectangleHeight() / 4) * 3
+          i * _blockHeight + _getLineHeight() + _getRectangleHeight() * 0.75
       )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
@@ -296,7 +296,7 @@
       columnCoordinates[courses[i].code.trim()] = {
         x1: columnIndex * _blockWidth + _getLineWidth(),
         x2: columnIndex * _blockWidth + _blockWidth,
-        y: i * _blockHeight + _getLineHeight() + _getRectangleHeight() / 2,
+        y: i * _blockHeight + _getLineHeight() + _getRectangleHeight() * 0.5,
         done: courses[i].done
       };
     }
@@ -337,7 +337,7 @@
             isCompletedEnabled
               ? lastColumnCoordinates[d.trim()].x2 +
                 (lastColumnCoordinates[d.trim()].done
-                  ? STROKE_WIDTH_DONE / 2
+                  ? STROKE_WIDTH_DONE * 0.5
                   : 0)
               : lastColumnCoordinates[d.trim()].x2
           )
@@ -345,7 +345,7 @@
             isCompletedEnabled
               ? columnCoordinates[m.code.trim()].x1 -
                 (columnCoordinates[m.code.trim()].done
-                  ? STROKE_WIDTH_DONE / 2
+                  ? STROKE_WIDTH_DONE * 0.5
                   : 0)
               : columnCoordinates[m.code.trim()].x1
           )
