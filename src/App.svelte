@@ -25,7 +25,7 @@
   const FONT_SIZE_TEXT = 0.65;
   const STROKE_WIDTH = FONT_SIZE_TEXT * 0.1;
   const STROKE_WIDTH_DONE = FONT_SIZE_TEXT * 0.75;
-  const CODE_DEFAULT_COLOR = "white";
+  const COURSE_DEFAULT_COLOR = "white";
   const DONE_DEFAULT_COLOR = "black";
   const TRANSITION_DURATION = 3000;
   const COURSE_RADIUS = 1;
@@ -310,10 +310,10 @@
 
   function _buildRectColor(code, colors) {
     if (!isColoredEnabled || !code || !colors) {
-      return CODE_DEFAULT_COLOR;
+      return COURSE_DEFAULT_COLOR;
     }
     const entry = Object.entries(colors).find(m => code.startsWith(m[0]));
-    return (entry && entry[1]) || colors.codeDefault || CODE_DEFAULT_COLOR;
+    return (entry && entry[1]) || colors.default || COURSE_DEFAULT_COLOR;
   }
 
   function _buildText1(text) {
