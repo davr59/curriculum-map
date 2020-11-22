@@ -10,6 +10,14 @@
   let isCompletedEnabled;
   let isRequirementsEnabled;
   let isJsonError;
+  let blockWidth;
+  let blockHeight;
+
+  const TOTAL_WIDTH = 99.25;
+  const TOTAL_HEIGHT = 71.5;
+  const MAX_COLUMNS_COUNT = 12;
+  const MAX_ROWS_COUNT = 10;
+  const MAX_TEXT_LENGTH = 15;
 
   const FONT_FAMILY = "monospace";
   const FONT_SIZE_TITLE = 2.5;
@@ -18,15 +26,8 @@
   const DONE_DEFAULT_COLOR = "black";
   const STROKE_WIDTH = 0.06;
   const STROKE_WIDTH_DONE = 0.4;
-  const MAX_TEXT_LENGTH = 20;
   const TRANSITION_DURATION = 3000;
-  const MAX_COLUMNS_COUNT = 12;
-  const MAX_ROWS_COUNT = 10;
-  const COURSE_WIDTH = 8.5;
-  const COURSE_HEIGHT = 5;
   const COURSE_RADIUS = 1;
-  const TOTAL_WIDTH = 99.5;
-  const TOTAL_HEIGHT = 71;
 
   onMount(async () => {
     textAreaJson = JSON.stringify(data, undefined, "\t");
@@ -55,13 +56,13 @@
       data.courses.length > MAX_COLUMNS_COUNT
         ? MAX_COLUMNS_COUNT
         : data.courses.length;
-    const x = TOTAL_WIDTH / data.courses.length;
+    blockWidth = TOTAL_WIDTH / data.courses.length;
 
     _drawTitle(group, data);
-    _drawColumns(group, data, columnsCount, x);
+    _drawColumns(group, data, columnsCount);
   }
 
-  function _drawColumns(group, data, columnsCount, x) {
+  function _drawColumns(group, data, columnsCount) {
     let lastColumnCoordinates = {};
     for (let columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
       const courses =
@@ -71,13 +72,11 @@
               MAX_ROWS_COUNT
             ))
           : data.courses[columnIndex];
-      const y = TOTAL_HEIGHT / courses.length;
+      blockHeight = TOTAL_HEIGHT / courses.length;
       lastColumnCoordinates = _drawColumn(
         group,
         courses,
         columnIndex,
-        x,
-        y,
         data.colors,
         lastColumnCoordinates
       );
@@ -119,26 +118,39 @@
       .attr("font-size", FONT_SIZE_TITLE);
   }
 
+  function _getBlockWidth() {
+    return blockWidth;
+  }
+
+  function _getBlockHeight() {
+    return blockHeight;
+  }
+
+  function _getRectangleWidth() {
+    return 8.5;
+  }
+
+  function _getRectangleHeight() {
+    return 5;
+  }
+
+  function _getLineWidth() {}
+
+  function _getLineHeight() {}
+
   function _drawColumn(
     group,
     courses,
     columnIndex,
-    x,
-    y,
     colors,
     lastColumnCoordinates
   ) {
-    _drawRect(group, courses, columnIndex, x, y, colors);
-    _drawText(group, courses, columnIndex, x, y);
+    _drawRect(group, courses, columnIndex, colors);
+    _drawText(group, courses, columnIndex);
     if (!isRequirementsEnabled) {
       return;
     }
-    const columnCoordinates = _buildColumnCoordinates(
-      courses,
-      columnIndex,
-      x,
-      y
-    );
+    const columnCoordinates = _buildColumnCoordinates(courses, columnIndex);
     _drawLine(
       group,
       courses,
@@ -149,16 +161,16 @@
     return columnCoordinates;
   }
 
-  function _drawRect(group, courses, columnIndex, x, y, colors) {
+  function _drawRect(group, courses, columnIndex, colors) {
     return group
       .selectAll()
       .data(courses)
       .enter()
       .append("rect")
-      .attr("width", COURSE_WIDTH)
-      .attr("height", COURSE_HEIGHT)
-      .attr("x", columnIndex * x + x / 8)
-      .attr("y", (d, i) => i * y + y / 2)
+      .attr("width", _getRectangleWidth())
+      .attr("height", _getRectangleHeight())
+      .attr("x", columnIndex * _getBlockWidth() + _getBlockWidth() / 8)
+      .attr("y", (d, i) => i * _getBlockHeight() + _getBlockHeight() / 2)
       .attr("rx", COURSE_RADIUS)
       .attr("fill", d => _buildRectColor(d.code, colors))
       .attr("stroke", "black")
@@ -183,17 +195,28 @@
     return (entry && entry[1]) || colors.codeDefault || CODE_DEFAULT_COLOR;
   }
 
-  function _drawText(group, courses, columnIndex, x, y) {
+  function _drawText(group, courses, columnIndex) {
     group
       .selectAll()
       .data(courses)
       .enter()
       .append("text")
-      .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
+      .attr(
+        "x",
+        columnIndex * _getBlockWidth() +
+          _getBlockWidth() / 8 +
+          _getRectangleWidth() / 2
+      )
       .attr("y", (d, i) =>
         d.name.length <= MAX_TEXT_LENGTH
-          ? i * y + y / 2 + COURSE_HEIGHT / 2 - FONT_SIZE_TEXT
-          : i * y + y / 2 + COURSE_HEIGHT / 4 + FONT_SIZE_TEXT / 2
+          ? i * _getBlockHeight() +
+            _getBlockHeight() / 2 +
+            _getRectangleHeight() / 2 -
+            FONT_SIZE_TEXT
+          : i * _getBlockHeight() +
+            _getBlockHeight() / 2 +
+            _getRectangleHeight() / 4 +
+            FONT_SIZE_TEXT / 2
       )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
@@ -205,11 +228,22 @@
       .data(courses)
       .enter()
       .append("text")
-      .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
+      .attr(
+        "x",
+        columnIndex * _getBlockWidth() +
+          _getBlockWidth() / 8 +
+          _getRectangleWidth() / 2
+      )
       .attr("y", (d, i) =>
         d.name.length <= MAX_TEXT_LENGTH
-          ? i * y + y / 2 + (COURSE_HEIGHT / 4) * 3 - FONT_SIZE_TEXT / 2
-          : i * y + y / 2 + (COURSE_HEIGHT / 4) * 3 - FONT_SIZE_TEXT
+          ? i * _getBlockHeight() +
+            _getBlockHeight() / 2 +
+            (_getRectangleHeight() / 4) * 3 -
+            FONT_SIZE_TEXT / 2
+          : i * _getBlockHeight() +
+            _getBlockHeight() / 2 +
+            (_getRectangleHeight() / 4) * 3 -
+            FONT_SIZE_TEXT
       )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
@@ -221,8 +255,19 @@
       .data(courses)
       .enter()
       .append("text")
-      .attr("x", columnIndex * x + x / 8 + COURSE_WIDTH / 2)
-      .attr("y", (d, i) => i * y + y / 2 + (COURSE_HEIGHT / 4) * 3)
+      .attr(
+        "x",
+        columnIndex * _getBlockWidth() +
+          _getBlockWidth() / 8 +
+          _getRectangleWidth() / 2
+      )
+      .attr(
+        "y",
+        (d, i) =>
+          i * _getBlockHeight() +
+          _getBlockHeight() / 2 +
+          (_getRectangleHeight() / 4) * 3
+      )
       .attr("font-family", FONT_FAMILY)
       .attr("font-size", (d, i) => FONT_SIZE_TEXT)
       .attr("text-anchor", "middle")
@@ -251,13 +296,19 @@
       : `${subtext.substr(0, MAX_TEXT_LENGTH - 3)}...`;
   }
 
-  function _buildColumnCoordinates(courses, columnIndex, x, y) {
+  function _buildColumnCoordinates(courses, columnIndex) {
     const columnCoordinates = {};
     for (let i = 0; i < courses.length; i++) {
       columnCoordinates[courses[i].code.trim()] = {
-        x1: columnIndex * x + x / 8,
-        x2: columnIndex * x + x / 8 + COURSE_WIDTH,
-        y: i * y + y / 2 + COURSE_HEIGHT / 2,
+        x1: columnIndex * _getBlockWidth() + _getBlockWidth() / 8,
+        x2:
+          columnIndex * _getBlockWidth() +
+          _getBlockWidth() / 8 +
+          _getRectangleWidth(),
+        y:
+          i * _getBlockHeight() +
+          _getBlockHeight() / 2 +
+          _getRectangleHeight() / 2,
         done: courses[i].done
       };
     }
