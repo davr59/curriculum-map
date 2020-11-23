@@ -1,5 +1,5 @@
 {
-  "name": "curriculum-map",
+  "name": "curriculum",
   "private": true,
   "scripts": {
     "build": "rollup -c",
