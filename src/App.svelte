@@ -402,7 +402,7 @@
 <main>
   <div class={'noprint'}>
     <form>
-      <h1>MAPA DE CURSOS | COURSES MAP</h1>
+      <h1>CURRÍCULO | CURRICULUM</h1>
       <div class={'divTextArea'}>
         <textarea
           class:jsonErrorTextArea={isJsonError}
