@@ -12,7 +12,7 @@
   let isJsonError;
 
   let _blockWidth;
-  let _realBlockWidth;
+  let _rectangleWidth;
   let _blockHeight;
   let _maxTextLength;
 
@@ -77,13 +77,10 @@
   }
 
   function _setBlockWidth(value) {
-    _realBlockWidth = value;
-    _blockWidth = value > MAX_BLOCK_WIDTH ? MAX_BLOCK_WIDTH : value;
-    _maxTextLength = Math.floor(_blockWidth * 2) - 1;
-  }
-
-  function _getRectangleWidth() {
-    return _blockWidth * 0.825;
+    _blockWidth = value;
+    _rectangleWidth =
+      (value > MAX_BLOCK_WIDTH ? MAX_BLOCK_WIDTH : value) * 0.825;
+    _maxTextLength = Math.floor(_rectangleWidth * 2) - 1;
   }
 
   function _getRectangleHeight() {
@@ -91,7 +88,7 @@
   }
 
   function _getLineWidth() {
-    return _blockWidth - _getRectangleWidth();
+    return (_blockWidth - _rectangleWidth) * 0.5;
   }
 
   function _getLineHeight() {
@@ -157,13 +154,9 @@
       .data(courses)
       .enter()
       .append("rect")
-      .attr("width", _getRectangleWidth())
+      .attr("width", _rectangleWidth)
       .attr("height", _getRectangleHeight())
-      .attr(
-        "x",
-        columnIndex * _getRectangleWidth() +
-          (columnIndex + 1) * _realBlockWidth * 0.175
-      )
+      .attr("x", columnIndex * _blockWidth + _getLineWidth())
       .attr("y", (d, i) => i * _blockHeight + _getLineHeight())
       .attr("rx", COURSE_RADIUS)
       .attr("fill", d => _buildRectColor(d.code, colors))
@@ -189,7 +182,7 @@
       .append("text")
       .attr(
         "x",
-        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() * 0.5
+        columnIndex * _blockWidth + _getLineWidth() + _rectangleWidth * 0.5
       )
       .attr("y", (d, i) =>
         d.name.length <= _maxTextLength
@@ -214,7 +207,7 @@
       .append("text")
       .attr(
         "x",
-        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() * 0.5
+        columnIndex * _blockWidth + _getLineWidth() + _rectangleWidth * 0.5
       )
       .attr("y", (d, i) =>
         d.name.length <= _maxTextLength
@@ -239,7 +232,7 @@
       .append("text")
       .attr(
         "x",
-        columnIndex * _blockWidth + _getLineWidth() + _getRectangleWidth() * 0.5
+        columnIndex * _blockWidth + _getLineWidth() + _rectangleWidth * 0.5
       )
       .attr(
         "y",
@@ -348,7 +341,7 @@
     for (let i = 0; i < courses.length; i++) {
       columnCoordinates[courses[i].code.trim()] = {
         x1: columnIndex * _blockWidth + _getLineWidth(),
-        x2: columnIndex * _blockWidth + _blockWidth,
+        x2: columnIndex * _blockWidth + _blockWidth - _getLineWidth(),
         y: i * _blockHeight + _getLineHeight() + _getRectangleHeight() * 0.5,
         done: courses[i].done
       };
