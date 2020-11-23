@@ -422,7 +422,7 @@
         </label>
         <label class="separatorLabel">
           <input type="checkbox" bind:checked={isCompletedEnabled} />
-          Mostrar completado | Show completed
+          Mostrar completados | Show completed
         </label>
         <label>
           <input type="checkbox" bind:checked={isRequirementsEnabled} />
@@ -431,7 +431,7 @@
       </div>
       {#if isCompletedEnabled}
         <button type="button" class="separatorButton" on:click={refreshMap}>
-          Animar | Animate
+          Animar completados | Animate completed
         </button>
       {/if}
       <button type="button" on:click={print}>Imprimir | Print</button>
