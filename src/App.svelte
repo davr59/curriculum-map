@@ -80,7 +80,7 @@
     _blockWidth = value;
     _rectangleWidth =
       (value > MAX_BLOCK_WIDTH ? MAX_BLOCK_WIDTH : value) * 0.825;
-    _maxTextLength = Math.floor(_rectangleWidth * 2) - 1;
+    _maxTextLength = Math.ceil(_rectangleWidth * 2) + 1;
   }
 
   function _getRectangleHeight() {
