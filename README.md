@@ -1,7 +1,7 @@
 # curriculum-map
 Curriculum Map | Mapa Curricular
 
-https://curriculum-map.vercel.app/
+* https://curriculum-map.vercel.app/
 
 Utility for creating Curriculum Maps.
 
