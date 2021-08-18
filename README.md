@@ -1,5 +1,5 @@
 # curriculum-map
-Curriculum Map | Mapa Curricular
+Curriculum Map | Mapa Curricular.
 
 * https://curriculum-map.vercel.app/
 
