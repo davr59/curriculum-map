@@ -18,6 +18,7 @@ function serve() {
   return {
     writeBundle() {
       if (server) return;
+      // TODO
       // eslint-disable-next-line global-require
       server = require('child_process').spawn(
         'npm',
