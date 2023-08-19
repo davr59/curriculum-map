@@ -1,6 +1,6 @@
 # curriculum map | mapa curricular
 
-- https://curriculum-map.vercel.app/
+- https://labmanigordo.vercel.app/curriculum-map
 
 Utility for creating Curriculum Maps.
 
